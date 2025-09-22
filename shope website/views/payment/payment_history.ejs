@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment History</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>Your Payment History</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Amount</th><th>Status</th><th>Order</th><th>Method</th><th>Receipt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% payments.forEach(p => { %>
+        <tr>
+          <td><%= p.createdAt.toLocaleDateString() %></td>
+          <td>₹<%= p.amount %></td>
+          <td><%= p.status %></td>
+          <td><%= p.details?.orderName || '-' %></td>
+          <td><%= p.paymentMethod %></td>
+          <td>
+            <% if (p.status === 'Completed') { %>
+              <a href="/payments/download/<%= p._id %>">PDF</a>
+            <% } else { %>
+              -
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

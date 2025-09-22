@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Receipt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    .card { background:#fff; max-width:700px; margin:auto; padding:24px; border-radius:10px; }
+    .actions a { margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Payment Successful 🎉</h2>
+    <p><strong>Date:</strong> <%= payment.createdAt.toLocaleString() %></p>
+    <p><strong>User:</strong> <%= payment.details.userName %></p>
+    <p><strong>Email:</strong> <%= payment.details.userEmail %></p>
+    <p><strong>Amount:</strong> ₹<%= payment.amount %></p>
+    <p><strong>Status:</strong> <%= payment.status %></p>
+    <p><strong>Method:</strong> <%= payment.paymentMethod %></p>
+
+    <% if (payment.paymentMethod === 'Razorpay') { %>
+      <p><strong>Razorpay Order ID:</strong> <%= payment.razorpayOrderId %></p>
+      <p><strong>Razorpay Payment ID:</strong> <%= payment.razorpayPaymentId %></p>
+    <% } %>
+
+    <div class="actions" style="margin-top: 16px;">
+      <a href="/payments/download/<%= payment._id %>">Download PDF</a>
+      <a href="/payments/history">Payment History</a>
+    </div>
+  </div>
+</body>
+</html>

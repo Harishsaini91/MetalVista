@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attach Product Field Details</title>
+</head>
+<body>
+  <link rel="stylesheet" href="../css/full_entry.css">
+
+<div id="productUploadForm">
+
+  <!-- ✅ Show uploaded or passed image info -->
+<% if (imageName) { %>
+  <p style="color: green;">Editing Product: <%= imageName %></p>
+
+  <!-- ✅ Edit Form for Updating -->
+  <form action="/products/update-product" method="POST" style="margin-bottom: 20px;">
+    <input type="hidden" name="imageName" value="<%= imageName %>">
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px;">Product Name:</label>
+      <input type="text" name="product_name" value="<%= product_name %>" 
+             style="width: 250px; padding: 5px;" required>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px;">Sub Names (comma separated):</label>
+      <input type="text" name="subnames" 
+             value="<%= subnames ? subnames.join(', ') : '' %>" 
+             style="width: 300px; padding: 5px;"
+             placeholder="Wood, Natural Wood, Polished, Outdoor, 4 wheels">
+    </div>
+
+    <button type="submit" style="padding: 8px 16px; cursor: pointer;">Update Product</button>
+  </form>
+<% } else { %>
+  <!-- ✅ Add New Product -->
+  <form action="/home" method="POST" enctype="multipart/form-data" target="dummyFrame" style="margin-bottom: 20px;">
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px;">Upload Product Image First:</label>
+      <input type="file" name="images" required>
+    </div>
+
+    <input type="hidden" name="slide2" value="2">
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px;">Give product a name:</label>
+      <input type="text" name="product_name" style="width: 250px; padding: 5px;" placeholder="product main name" required>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px;">Sub Names (comma separated):</label>
+      <input type="text" name="subnames" style="width: 300px; padding: 5px;" 
+             placeholder="Wood, Natural Wood, Polished, Outdoor, 4 wheels">
+    </div>
+
+    <button type="submit" style="padding: 8px 16px; cursor: pointer;">Upload Image</button>
+  </form>
+
+
+    <!-- ✅ Hidden iframe to silently receive upload response -->
+    <iframe name="dummyFrame" style="display:none;"></iframe>
+    <!-- ✅ Show uploaded image name -->
+    <p id="imageInfo" style="color: green;"></p>
+  <% } %>
+
+  <!-- ✅ Main Form -->
+  <form action="/products/save-model-data" method="POST" onsubmit="return validateForm()">
+    <input type="hidden" name="imageName" id="imageName" value="<%= imageName || '' %>">
+<!-- 
+    <% if (!imageName) { %>
+      <label>Or enter existing Image Name:</label>
+      <input type="text" name="manualImageName" id="manualImageName">
+      <button type="button" onclick="lookupImageId()">Lookup</button>
+      <p id="lookupStatus"></p>
+    <% } %> -->
+
+    <h3>Select Product Fields</h3>
+
+    <% if (model?.fields?.length > 0) { %>
+      <% model.fields.forEach(field => { %>
+        <div class="field-group">
+          <label><%= field.name %> <% if (field.unit) { %> (<%= field.unit %>) <% } %></label>
+          <div class="options">
+            <% field.values.forEach(val => {
+                 const savedValues = savedData?.selectedFields?.[field.name] || [];
+                 const isChecked = savedValues.includes(val);
+            %>
+              <label class="option">
+                <input type="checkbox" name="<%= field.name %>" value="<%= val %>" <%= isChecked ? "checked" : "" %>>
+                <span><%= val %></span>
+              </label>
+            <% }) %>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p>No dynamic fields defined yet. Go to model editor to add fields.</p>
+    <% } %>
+
+    <button type="submit">Save Field Data</button>
+  </form>
+</div>
+
+<!-- ✅ Socket.IO Script -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  // socket.on('imageUploaded', ({  imageName }) => {
+  //   document.getElementById('imageId').value = imageId;
+  //   document.getElementById('imageName').value = imageName;
+  //   document.getElementById('imageInfo').innerText = `Uploaded: ${imageName}`;
+  // });
+
+  // Listen for image upload from server
+  socket.on('imageUploaded', ({ imageName }) => {
+    document.getElementById('imageName').value = imageName;
+    document.getElementById('imageInfo').innerText = `✅ Uploaded: ${imageName}`;
+  });
+
+  function validateForm() {
+    const imageName = document.getElementById('imageName').value;
+    if (!imageName) {
+      alert("Please upload or lookup image name first.");
+      return false;
+    }
+    return true;
+  }
+
+
+
+  function validateForm() {
+  const imageName = document.getElementById('imageName').value;
+  if (!imageName) {
+    alert("Please upload or lookup image name first.");
+    return false;
+  }
+  return true;
+}
+
+
+  async function lookupImageId() {
+    const name = document.getElementById("manualImageName").value.trim();
+    if (!name) return alert("Enter an image name");
+
+    const res = await fetch(`/api/lookup-image-id?name=${name}`);
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('imageId').value = data.id;
+      document.getElementById('imageName').value = name;
+      document.getElementById('lookupStatus').innerText = "✅ Image found!";
+    } else {
+      document.getElementById('lookupStatus').innerText = "❌ Not found";
+    }
+  }
+</script>
+
+</body>
+</html>

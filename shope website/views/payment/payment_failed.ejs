@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Failed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body { font-family: sans-serif; background: #fee; padding: 30px; text-align: center; }
+    h2 { color: #c00; }
+  </style>
+</head>
+<body>
+  <h2>Payment Failed ❌</h2>
+  <p>Order: <%= payment?.details?.orderName || '-' %></p>
+  <p>Status: <strong><%= payment?.status %></strong></p>
+  <p><a href="/payments/history">Back to history</a></p>
+</body>
+</html>

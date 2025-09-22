@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="/css/homepage.css">
+</head>
+
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <!-- Slider Section -->
+    <div class="slider">
+      <div class="slide" style="background-image: url('./images/default.jpg');">
+
+        <nav class="navbar">
+          <div class="logo">Logo</div>
+
+          <div id="overlay"></div>
+
+          <div class="search-container">
+            <input type="text" id="searchBar" placeholder="Search products..." />
+            <div id="suggestions"></div>
+          </div>
+
+          <div id="results"></div>
+
+          <ul class="nav-links">
+            <% if (userRole === 'admin') { %>
+              <li><a href="/admin/chat">Admin Chat</a></li>
+            <% } %>
+            <% if (userRole === 'user') { %>
+              <li><a href="/user/chat">Chat Support</a></li>
+            <% } %>
+      
+
+            <li><a href="/openrouter-chtgpt-chat">Chat Ai</a></li>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/product?category=indoor">Products</a></li>
+            <% if (!userRole) { %>
+              <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+            <% } else { %>
+              <li><a href="/logout">Logout</a></li>
+            <% } %>
+            <button onclick="openModelWindow()">➕ Update product models</button>
+          </ul>
+
+          <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
+
+          <div class="menu background-icons" id="menu">
+            <ul>
+                <% if (userRole === 'admin') { %>
+              <li><a href="/admin/chat">Admin Chat</a></li>
+            <% } %>
+              <% if (userRole === 'user') { %>
+                <li><a href="/user/chat">Chat Support</a></li>
+              <% } %>
+            <li><a href="/openrouter-chtgpt-chat">Chat Ai</a></li>
+
+              <li><a href="/home">Home</a></li>
+              <li><a href="/about">About</a></li>
+              <li><a href="/product?category=indoor">Product</a></li>
+              <% if (!userRole) { %>
+                <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+              <% } else { %>
+                <li><a href="/logout">Logout</a></li>
+              <% } %>
+              <button onclick="openModelWindow()">➕ Add New Product</button>
+            </ul>
+          </div>
+        </nav>
+
+        <h4 class="slider-title">
+          <span class="welcome-text">Welcome to My Workshop</span><br>
+          Jai Jeen Mata Welding Workshop<br>
+          Contact No. 8930081481
+        </h4>
+
+        <a href="https://maps.app.goo.gl/U28yWXRhCx8EbUCf8" class="btn" target="_blank"><img src="./images/logo/location.svg" alt=""></a>
+      </div>
+      <button class="prev" onclick="prevSlide()">&#10094;</button>
+      <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+  </header>
+
+  <% if (userRole == 'admin') { %>
+    <div>
+      <form action="/home" method="post" enctype="multipart/form-data" class="admin_image">
+        <div class="input-group" id="file_here">
+          <input type="file" id="image" name="images" placeholder="image" multiple required>
+          <input type="hidden" name="slide1" value="1">
+          <button type="submit" class="image_up">Upload</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="delete-section">
+      <form action='/delete_image' method="post">
+        <input type="text" id="currentImageName" value="" name="imageName" readonly>
+        <input type="hidden" name="slide1" value="1">
+        <button type="submit" class="image_up">Delete</button>
+      </form>
+    </div>
+  <% } %>
+
+  <section class="product-range">
+    <h2>Product Range</h2>
+    <div class="products">
+      <a href="/product?category=indoor" class="product">
+        <img src='./images/product_range_image/indoor.jfif' alt="Indoor Items">
+        <span>Indoor Items</span>
+      </a>
+      <a href="/product?category=outdoor" class="product">
+        <img src='./images/product_range_image/outdoor.jfif' alt="Outdoor Items">
+        <span>Outdoor Items</span>
+      </a>
+      <a href="/product?category=counter" class="product">
+        <img src='./images/product_range_image/counter.jfif' alt="Counter">
+        <span>Counter</span>
+      </a>
+      <a href="/product?category=art" class="product">
+        <img src='./images/product_range_image/art.jfif' alt="3D Art">
+        <span>3D Art</span>
+      </a>
+      <a href="/product?category=other" class="product">
+        <img src='./images/product_range_image/other.jfif' alt="Other">
+        <span>Other</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="carousel-section">
+    <% if (userRole == 'admin') { %>
+      <button onclick="openProductUpload()">➕ Add Product with Details</button>
+      <div class="delete-section">
+        <form action='/delete_image' method="post">
+          <input type="text" id="currentImageName2" value="" name="imageName" readonly>
+          <input type="hidden" name="slide2" value="2">
+          <button type="submit" class="image_up">Delete</button>
+        </form>
+      </div>
+    <% } %>
+
+    <div class="carousel">
+      <div class="carousel-track">
+        <% if (slides2 && slides2.length > 0) { %>
+          <% slides2.forEach((slide, index) => { %>
+            <div class="carousel-item-wrapper">
+              <a href="/product_details?image=<%= slide.name %>"
+                 class="carousel-item"
+                 onmouseover="updateCurrentImageName('<%= slide.name %>')"
+                 style="background-image: url('./images/uploded_image/<%= slide.name %>');">
+              </a>
+              <a class="edit-icon" href="" title="Edit Schema" onclick="openSchemaEditor('<%= slide.name %>'); event.stopPropagation();">📝</a>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="slider2">
+      <div class="slide2" style="background-image: url(' ');">
+        <a href=" " class="btn image_product_url">More</a>
+      </div>
+      <button class="prev2" onclick="prevSlide2()">&#10094;</button>
+      <button class="next2" onclick="nextSlide2()">&#10095;</button>
+      <div class="slide2-number" id="slide2-number">1 / 3</div>
+    </div>
+  </section>
+
+  <div class="vertical-line"></div>
+
+  <div class="about">
+    <h1>Jai Jeen Mata Welding Workshop</h1>
+    <p>Your Trusted Partner for Superior Metalwork and Welding Solutions</p>
+  </div>
+
+  <section class="services">
+    <h2>Our Services</h2>
+    <ul>
+      <li>✅ Gates, Grills, Railings</li>
+      <li>✅ Section Windows, Safety Grills, Jalis (Mesh Designs)</li>
+      <li>✅ Balustrades, Shutters, and Custom Metal Fabrication</li>
+      <li>✅ Specialized in Steel Gates, Railings, Counters, and other steelworks</li>
+    </ul>
+  </section>
+
+  <section class="why-choose">
+    <h2>Why Choose Jai Jeen Mata Welding Workshop?</h2>
+    <ul>
+      <li>💎 High-Quality Materials: Built to last with superior-grade steel and metals.</li>
+      <li>🎨 Customized Designs: Tailored to match your specific needs and preferences.</li>
+      <li>⏱️ Timely Delivery: We value your time and ensure projects are completed as promised.</li>
+      <li>💰 Affordable Pricing: Premium work at competitive rates.</li>
+      <li>🛠️ Expert Craftsmanship: Years of experience and attention to detail in every project.</li>
+    </ul>
+  </section>
+
+  <section class="location">
+    <h2>Our Location</h2>
+    <p>📍 Dayabai Bypass Road, near Canal, close to Mili ka Gotar, Narnaul (Rewari)</p>
+    <p>Our convenient location ensures easy access for all customers in and around the Narnaul area.</p>
+  </section>
+
+  <section class="contact">
+    <h2>Let’s Bring Your Vision to Life!</h2>
+    <p>Whether it’s a sturdy gate, sleek railing, or a modern steel counter, Jai Jeen Mata Welding Workshop is your one-stop solution.</p>
+    <p>📞 <a href="tel:+YourPhoneNumber">Contact Us Today</a></p>
+    <p>🛠️ Visit Us at Our Workshop: Explore our craftsmanship and discuss your next project in detail!</p>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <!-- Footer content omitted for brevity -->
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Your Company. All rights reserved. | Privacy | Terms</p>
+    </div>
+  </footer>
+
+  <script>
+    window.slidesData1 = <%- JSON.stringify(slides) %>;
+    window.slidesData2 = <%- JSON.stringify(slides2) %>;
+  </script>
+  <script src="/js/slider.js"></script>
+  <script src="/js/slider1.js"></script>
+  <script src="/js/slider2.js"></script>
+  <script src="/js/search.js"></script>
+</body>
+
+</html>

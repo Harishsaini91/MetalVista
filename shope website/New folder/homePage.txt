@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="/css/homepage.css">
+</head>
+
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <!-- Slider Section -->
+    <div class="slider">
+      <div class="slide" style="background-image: url('./images/default.jpg');">
+
+
+          <nav class="navbar">
+            <div class="logo">Logo</div>
+
+            <div id="overlay"></div>
+
+            <div class="search-container">
+              <input type="text" id="searchBar" placeholder="Search products..." />
+              <div id="suggestions"></div>
+            </div>
+            
+            <div id="results"></div>
+              <!-- <div id="results"></div> -->
+            <!-- </div> -->
+            
+            <ul class="nav-links" >
+              <% if (userRole === 'admin') { %>
+  <li><a href="/admin/chat">Admin Chat</a></li>
+<% } %>
+<% if (userRole === 'user') { %>
+<li><a href="/user/chat">Chat Support</a></li>
+<% } %>
+              <!-- <li><a href="/openrouter-chat">Chat Ai</a></li> -->
+              <li><a href="/openrouter-chtgpt-chat">Chat Ai</a></li>
+              <li><a href="/home">Home</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/product?category=indoor">Products</a></li>
+               <% if (!userRole) { %>
+                <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+                <% }else{  %> 
+                  <li><a href="/logout">Logout</a></li>
+                  
+                  <% }  %> 
+
+                        <button onclick="openModelWindow()">➕ Update product models</button>
+
+                </ul>
+
+            <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
+
+            <!-- Menu -->
+            <div class="menu background-icons" id="menu">
+              <ul>
+                <% if (userRole === 'user') { %>
+<li><a href="/user/chat">Chat Support</a></li>
+<% } %>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/product?category=indoor">Product</a></li>
+                  <% if (!userRole) { %>
+                <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+                <% }else{  %> 
+                  <li><a href="/logout">Logout</a></li>
+                  
+                  <% }  %> 
+                        <button onclick="openModelWindow()">➕ Add New Product</button>
+
+              </ul>
+            </div>
+            
+          </nav>
+
+          <h4 class="slider-title">
+            <span class="welcome-text">Welcome to My Workshop</span><br>
+            Jai Jeen Mata Welding Workshop<br>
+            Contact No. 8930081481
+          </h4> 
+
+          <a href=https://maps.app.goo.gl/U28yWXRhCx8EbUCf8 class="btn" target="_blank"><img src="./images/logo/location.svg" alt=""></a>
+        </div>
+      <button class="prev" onclick="prevSlide()">&#10094;</button>
+      <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+  </header>
+
+  <% if (userRole == 'admin') { %>
+    <div>
+      <form action="/home" method="post" enctype="multipart/form-data" class="admin_image">
+        <div class="input-group" id="file_here">
+          <input type="file" id="image" name="images" placeholder="image" multiple required>
+          <input type="hidden" name="slide1" value="1">
+          <button type="submit" class="image_up">Upload</button>
+        </div>
+      </form>
+    </div>
+
+     
+
+
+
+
+  
+  <div class="delete-section">
+    <form action='/delete_image' method="post" >
+
+      <!-- The input field to display the current image name -->
+      <input type="text" id="currentImageName" value="" name="imageName" readonly>
+      <input type="hidden" name="slide1" value="1">
+      <button type="submit" class="image_up"   >Delete</button>
+    </form>
+  </div>
+  <% } %>
+  <!-- Product Range Section -->
+  <section class="product-range">
+    <h2>Product Range</h2>
+    <div class="products">
+      <a href="/product?category=indoor" class="product">
+        <img src='./images/product_range_image/indoor.jfif' alt="Indoor Items">
+        <span>Indoor Items</span>
+      </a>
+      <a href="/product?category=outdoor" class="product">
+        <img src='./images/product_range_image/outdoor.jfif' alt="Outdoor Items">
+        <span>Outdoor Items</span>
+      </a>
+      <a href="/product?category=counter" class="product">
+        <img src='./images/product_range_image/counter.jfif' alt="Counter">
+        <span>Counter</span>
+      </a>
+      <a href="/product?category=art" class="product">
+        <img src='./images/product_range_image/art.jfif' alt="3D Art">
+        <span>3D Art</span>
+      </a>
+      <a href="/product?category=other" class="product">
+        <img src='./images/product_range_image/other.jfif' alt="Other">
+        <span>Other</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Third Section -->
+  <section class="carousel-section">
+    
+    <% if (userRole == 'admin') { %>
+      <!-- <div>
+        <form action="/home" method="post" enctype="multipart/form-data" class="admin_image">
+          <div class="input-group" id="file_here">
+            <input type="file" id="image" name="images" placeholder="image" multiple required>
+            <input type="hidden" name="slide2" value="2">
+            <button type="submit" class="image_up">Upload</button>
+          </div>
+        </form>
+      </div> -->
+
+           <button onclick="openProductUpload()">➕ Add Product with Details</button>
+
+
+
+  <div class="delete-section">
+    <form action='/delete_image' method="post" >
+
+      <!-- The input field to display the current image name -->
+      <input type="text" id="currentImageName2" value="" name="imageName" readonly>
+      <input type="hidden" name="slide2" value="2">
+      <button type="submit" class="image_up"   >Delete</button>
+    </form>
+  </div>
+
+
+    <% } %>
+    
+
+   
+    <div class="carousel">
+<div class="carousel-track">
+  <% if (slides2 && slides2.length > 0) { %>
+    <% slides2.forEach((slide, index) => { %>
+      <div class="carousel-item-wrapper">
+        <!-- Image block -->
+        <a href="/product_details?image=<%= slide.name %>"
+           class="carousel-item"
+           onmouseover="updateCurrentImageName('<%= slide.name %>')"
+           style="background-image: url('./images/uploded_image/<%= slide.name %>');">
+        </a>
+
+        <!-- ✏️ Edit icon on top-right -->
+    <a
+  class="edit-icon"
+  href=""
+  title="Edit Schema"
+  onclick="openSchemaEditor('<%= slide.name %>'); event.stopPropagation();"
+>
+  📝
+</a>
+
+
+
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+
+    </div>
+  </section>
+
+  <!-- Fourth Section -->
+  <section>
+    <div class="slider2">
+        <div class="slide2" style="background-image: url(' ');">
+          <a   href=" " class="btn image_product_url">More</a>
+        </div>
+      <button class="prev2" onclick="prevSlide2()">&#10094;</button>
+      <button class="next2" onclick="nextSlide2()">&#10095;</button>
+      <div class="slide2-number" id="slide2-number">1 / 3</div>
+    </div>
+  </section>
+  <div class="vertical-line"></div>
+<!--  -->
+
+
+<div class="about">
+
+  <h1>Jai Jeen Mata Welding Workshop</h1>
+  <p>Your Trusted Partner for Superior Metalwork and Welding Solutions</p>
+</div>
+
+<section class="services">
+  <h2>Our Services</h2>
+  <ul>
+      <li>✅ Gates, Grills, Railings</li>
+      <li>✅ Section Windows, Safety Grills, Jalis (Mesh Designs)</li>
+      <li>✅ Balustrades, Shutters, and Custom Metal Fabrication</li>
+      <li>✅ Specialized in Steel Gates, Railings, Counters, and other steelworks</li>
+  </ul>
+</section>
+
+<section class="why-choose">
+  <h2>Why Choose Jai Jeen Mata Welding Workshop?</h2>
+  <ul>
+      <li>💎 High-Quality Materials: Built to last with superior-grade steel and metals.</li>
+      <li>🎨 Customized Designs: Tailored to match your specific needs and preferences.</li>
+      <li>⏱️ Timely Delivery: We value your time and ensure projects are completed as promised.</li>
+      <li>💰 Affordable Pricing: Premium work at competitive rates.</li>
+      <li>🛠️ Expert Craftsmanship: Years of experience and attention to detail in every project.</li>
+  </ul>
+</section>
+
+<section class="location">
+  <h2>Our Location</h2>
+  <p>📍 Dayabai Bypass Road, near Canal, close to Mili ka Gotar, Narnaul (Rewari)</p>
+  <p>Our convenient location ensures easy access for all customers in and around the Narnaul area.</p>
+</section>
+
+<section class="contact">
+  <h2>Let’s Bring Your Vision to Life!</h2>
+  <p>Whether it’s a sturdy gate, sleek railing, or a modern steel counter, Jai Jeen Mata Welding Workshop is your one-stop solution.</p>
+  <p>📞 <a href="tel:+YourPhoneNumber">Contact Us Today</a></p>
+  <p>🛠️ Visit Us at Our Workshop: Explore our craftsmanship and discuss your next project in detail!</p>
+</section>
+
+<footer>
+  <p>&copy; 2025 Jai Jeen Mata Welding Workshop. All Rights Reserved.</p>
+</footer>
+ 
+
+
+<!-- footer -->
+<footer>
+  <div class="footer-container">
+      <!-- Section 1 -->
+      <div class="footer-section">
+          <h4>About Business Profile</h4>
+          <ul>
+              <li><a href="#">Restaurants</a></li>
+              <li><a href="#">Retail</a></li>
+              <li><a href="#">Services</a></li>
+              <li><a href="#">Resources</a></li>
+              <li><a href="#">FAQ</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="footer-section">
+          <h4>Learning & Support</h4>
+          <ul>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Report a Spam Call</a></li>
+              <li><a href="#">The Digital Garage</a></li>
+              <li><a href="#">Primer</a></li>
+              <li><a href="#">Join User Studies</a></li>
+              <li><a href="#">Skillshop</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="footer-section">
+          <h4>Developers & Partners</h4>
+          <ul>
+              <li><a href="#">Business Profile APIs</a></li>
+              <li><a href="#">Google Developers Site</a></li>
+              <li><a href="#">Google Places API</a></li>
+              <li><a href="#">Business Profile Partners</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="footer-section">
+          <h4>Related Products</h4>
+          <ul>
+              <li><a href="#">Custom Iron / Steel work</a></li>
+              <li><a href="#">3D Animation / Video Editing</a></li>
+              <li><a href="#">Web Designing</a></li>
+              <li><a href="#">Wood Furnetur and Other</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="footer-section contact-info">
+          <h4>Contact Info</h4>
+          <p>Jai Jeen Mata welding Workshop,</p>
+          <p> Ward 10,Daya Nagar(near pump house),Narnaul Bypass,Haryana,</p>
+          <p>Narnaul Pin 123001,</p>
+          <p>Email: hskharishsaini123@gmail.com</p>
+          <p>Call Us: +91 893 0037 7079</p>
+      </div>
+
+      <!-- Section 6 -->
+      <div class="footer-section social-icons">
+          <h4>Follow Us</h4>
+          <a href="#">LinkedIn</a>
+          <a href="#">YouTube</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+      </div>
+
+      <!-- Section 7 -->
+      <div class="footer-section partners">
+          <h4>Our Partners</h4>
+          <img src="aws-logo.png" alt="AWS">
+          <img src="widevine-logo.png" alt="Widevine">
+          <img src="playready-logo.png" alt="PlayReady">
+      </div>
+  </div>
+
+  <div class="footer-bottom">
+      <p>&copy; 2025 Your Company. All rights reserved. | Privacy | Terms</p>
+  </div>
+</footer>
+
+
+
+
+ 
+  <script src="script.js"></script>
+
+  <script>
+
+  function openProductUpload() {
+    const popup = window.open('/products/full-entry', 'ProductUploadPopup',
+      'width=750,height=700,left=250,top=100,resizable=yes,scrollbars=yes');
+  }
+
+
+    // 
+
+  function openModelWindow() {
+    const win = window.open('/products/model-editor', 'Upload Product',
+      'width=650,height=700,left=200,top=100,resizable=no,scrollbars=yes');
+  }
+
+
+ function openSchemaEditor(imageName) {
+  const url = `/products/full-entry?imageName=${encodeURIComponent(imageName)}`;
+  const win = window.open(url, 'EditProductSchema',
+    'width=650,height=700,left=200,top=100,resizable=no,scrollbars=yes');
+}
+ 
+// 
+
+function toggleMenu() {
+  const menu = document.getElementById("menu");
+  menu.classList.toggle("show");  // Show or hide the menu when the icon is clicked
+}
+
+// Hide the menu when mouse moves outside
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById("menu");
+  const menuIcon = document.querySelector(".menu-icon");
+  
+  // Close the menu if the click is outside the menu or icon
+  if (!menu.contains(event.target) && event.target !== menuIcon) {
+    menu.classList.remove("show");
+  }
+});
+
+
+
+
+// 
+
+
+
+
+
+let currentSlide = 0;
+    const slides = <%- JSON.stringify(slides) %>; // Server-side data
+
+    if (slides && slides.length > 0) {
+      const slideElement = document.querySelector(".slide");
+      slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[currentSlide].name}')`;
+    }
+
+    function showSlide(index) {
+      const slideElement = document.querySelector(".slide");
+  const imageNameInput = document.getElementById("currentImageName");
+
+  if (slideElement && slides.length > 0) {
+    // Dynamically set the background image using the current slide's name
+    const imageName = slides[index]?.name || "default.jpg"; // Fallback to 'default.jpg'
+    slideElement.style.backgroundImage = `url('./images/uploded_image/${imageName}')`;
+
+    // Update the input field with the current image name
+    if (imageNameInput) {
+      imageNameInput.value = imageName; // Dynamically set the image name
+    }
+        slideElement.classList.add("active");
+      } else {
+        console.error("Slide element not found or slides array is empty!");
+      }
+    }
+    // function showSlide(index) {
+    //   const slideElement = document.querySelector(".slide");
+    //   if (slideElement && slides.length > 0) {
+    //     slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[index].name}')`;
+    //     slideElement.classList.add("active");
+    //   } else {
+    //     console.error("Slide element not found or slides array is empty!");
+    //   }
+    // }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length; // Cycle to next
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length; // Cycle back
+      showSlide(currentSlide);
+    }
+
+    // Automatically initialize first slide
+    if (slides && slides.length > 0) {
+      showSlide(currentSlide);
+    }
+
+    // Add event listeners for hover
+    const sliderElement = document.querySelector(".slider");
+
+    if (sliderElement) {
+      let slideshowInterval = setInterval(nextSlide, 8000); // Automatically change slides every 8 seconds
+
+      // Pause slideshow on hover
+      sliderElement.addEventListener("mouseenter", () => {
+        clearInterval(slideshowInterval); // Stop auto-slide
+      });
+
+      // Resume slideshow on hover out
+      sliderElement.addEventListener("mouseleave", () => {
+        slideshowInterval = setInterval(nextSlide, 8000); // Restart auto-slide
+      });
+    }
+
+
+
+    
+    
+    let currentSlide2 = 0;
+    const slides2 = <%- JSON.stringify(slides2) %>;
+    const slideNumberElement = document.getElementById("slide2-number");
+
+    function showSlide2(index) {
+      const slideElement2 = document.querySelector(".slide2");
+      const imageProductUrl = document.querySelector(".image_product_url");  //
+      if (slideElement2 && slides2.length > 0) {
+        slideElement2.style.backgroundImage = `url('./images/uploded_image/${slides2[index].name}')`;
+        imageProductUrl.setAttribute('href', `/product_details?image=${slides2[index].name}`);
+
+        slideNumberElement.textContent = `${index + 1} / ${slides2.length}`;
+
+         
+      } else {
+        console.error("Slide2 element not found or slides2 array is empty!");
+      }
+    }
+
+    function nextSlide2() {
+      currentSlide2 = (currentSlide2 + 1) % slides2.length;
+      showSlide2(currentSlide2);
+    }
+
+    function prevSlide2() {
+      currentSlide2 = (currentSlide2 - 1 + slides2.length) % slides2.length;
+      showSlide2(currentSlide2);
+    }
+
+    if (slides2 && slides2.length > 0) {
+      showSlide2(currentSlide2);
+    }
+
+    const sliderElement2 = document.querySelector(".slider2");
+
+    if (sliderElement2) {
+      let slideshowInterval2 = setInterval(nextSlide2, 4000);
+      sliderElement2.addEventListener("mouseenter", () => clearInterval(slideshowInterval2));
+      sliderElement2.addEventListener("mouseleave", () => slideshowInterval2 = setInterval(nextSlide2, 4000));
+    }
+
+
+
+  //  search bar
+
+
+const searchBar = document.getElementById("searchBar");
+const suggestionsDiv = document.getElementById("suggestions");
+const overlay = document.getElementById("overlay");
+const resultsDiv = document.getElementById("results");
+
+searchBar.addEventListener("input", async (e) => {
+  const query = e.target.value.trim();
+  if (!query) {
+    suggestionsDiv.innerHTML = "";
+    suggestionsDiv.style.display = "none";
+    return;
+  }
+
+  const res = await fetch(`/products/api/search-products?q=${encodeURIComponent(query)}`);
+  const products = await res.json();
+
+  showSuggestions(products);
+});
+
+function showSuggestions(products) {
+  if (!products.length) {
+    suggestionsDiv.innerHTML = "<div class='suggestion-item'>No matches</div>";
+    suggestionsDiv.style.display = "block";
+    return;
+  }
+
+  suggestionsDiv.innerHTML = products.map(p => `
+    <div class="suggestion-item" onclick="viewProduct('${p.imageName}')">
+      <img src="${p.imageUrl}" width="40" height="40" style="vertical-align: middle;" />
+      <span style="margin-left: 10px;">${p.name || p.imageName}</span>
+    </div>
+  `).join("");
+
+  suggestionsDiv.style.display = "block";
+}
+
+function viewProduct(imageName) {
+  window.location.href = `/product_details?image=${imageName}`;
+}
+
+// Optional overlay logic
+searchBar.addEventListener("focus", () => {
+  document.body.style.overflow = "hidden";  // prevent scroll
+  overlay.style.display = "block";
+  suggestionsDiv.style.display = "block";
+});
+
+overlay.addEventListener("click", () => {
+  document.body.style.overflow = "auto";    // re-enable scroll
+  overlay.style.display = "none";
+  suggestionsDiv.style.display = "none";
+  searchBar.blur();
+});
+
+  // 
+  function updateCurrentImageName(imageName) {
+    const currentImageNameInput = document.getElementById("currentImageName2");
+    if (currentImageNameInput) {
+      currentImageNameInput.value = imageName; // Set the hovered image name
+    }
+  }
+
+
+
+  // 
+
+  </script>
+</body>
+
+</html>

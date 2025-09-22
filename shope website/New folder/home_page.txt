@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="/css/homepage.css">
+</head>
+
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <!-- Slider Section -->
+    <div class="slider">
+      <% if (slides && slides.length > 0) { %>
+        <div class="slide" style="background-image: url('./images/uploded_image/<%= slides[0].name %>');">
+
+          <nav class="navbar">
+            <div class="logo">Logo</div>
+
+            
+            <ul class="nav-links" >
+              <li><a href="/home">Home</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/product">Products</a></li>
+              <li><a href="/contact">Contact</a></li>
+              <li><a href="sign_in" onclick="openLoginWindow()">Sign in</a></li>
+            </ul>
+
+            <div class="menu-icon" onclick="toggleMenu()">
+              ☰
+            </div>
+          
+            <!-- Toggleable menu -->
+            <div class="menu" id="menu"   >
+              <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/product">Product</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li><a href="/sign_in">Sign In</a></li>
+              </ul>
+            </div>
+          </nav>
+
+          <h4 class="slider-title">
+            <span class="welcome-text">Welcome to My Workshop</span><br>
+            Jai Jeen Mata Welding Workshop<br>
+            Contact No. 8901501481
+          </h4> 
+
+          <a href=https://maps.app.goo.gl/U28yWXRhCx8EbUCf8 class="btn" target="_blank"><img src="./images/logo/location.svg" alt=""></a>
+        </div>
+      <% } %>
+      <button class="prev" onclick="prevSlide()">&#10094;</button>
+      <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+  </header>
+
+    <% if (userRole == 'admin') { %>
+      <div>
+        <form action="/home" method="post" enctype="multipart/form-data" class="admin_image">
+          <div class="input-group" id="file_here">
+            <input type="file" id="image" name="image" placeholder="image" required>
+            <input type="hidden" name="slide1" value="1">
+            <button type="submit" class="image_up">Upload</button>
+          </div>
+        </form>
+      </div>
+    <% } %>
+
+  <!-- Product Range Section -->
+  <section class="product-range">
+    <h2>Product Range</h2>
+    <div class="products">
+      <a href="product" class="product">
+        <img src='./images/product_range_image/indoor.jfif' alt="Indoor Items">
+        <span>Indoor Items</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/outdoor.jfif' alt="Outdoor Items">
+        <span>Outdoor Items</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/counter.jfif' alt="Counter">
+        <span>Counter</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/art.jfif' alt="3D Art">
+        <span>3D Art</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/other.jfif' alt="Other">
+        <span>Other</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Third Section -->
+  <section class="carousel-section">
+    <% if (userRole == 'admin') { %>
+      <form action="/home" method="post" enctype="multipart/form-data" class="admin_image">
+        <div class="input-group" id="file_here">
+          <input type="file" id="image" name="image" required>
+          <input type="hidden" name="slide2" value="2">
+          <button type="submit" class="image_up">Upload</button>
+        </div>
+      </form>
+    <% } %>
+
+    <div class="carousel">
+
+      <div class="carousel-track">
+        <% if (slides2 && slides2.length > 0) { %>
+          <% slides2.forEach((slide, index) => { %>
+            <a href="/product_details?image=<%= slide.name %>" class="carousel-item" style="background-image: url('./images/uploded_image/<%= slide.name %>');"></a>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fourth Section -->
+  <section>
+    <div class="slider2">
+      <% if (slides && slides.length > 0) { %>
+        <div class="slide2" style="background-image: url('./images/uploded_image/<%= slides[0].name %>');">
+          <a   href="/product_details?image=<%= slides[0].name %>" class="btn image_product_url">More</a>
+        </div>
+      <% } %>
+      <button class="prev2" onclick="prevSlide2()">&#10094;</button>
+      <button class="next2" onclick="nextSlide2()">&#10095;</button>
+      <div class="slide-number" id="slide-number">1 / 3</div>
+    </div>
+  </section>
+  <div class="vertical-line"></div>
+<!--  -->
+
+
+<div class="about">
+
+  <h1>Jai Jeen Mata Welding Workshop</h1>
+  <p>Your Trusted Partner for Superior Metalwork and Welding Solutions</p>
+</div>
+
+<section class="services">
+  <h2>Our Services</h2>
+  <ul>
+      <li>✅ Gates, Grills, Railings</li>
+      <li>✅ Section Windows, Safety Grills, Jalis (Mesh Designs)</li>
+      <li>✅ Balustrades, Shutters, and Custom Metal Fabrication</li>
+      <li>✅ Specialized in Steel Gates, Railings, Counters, and other steelworks</li>
+  </ul>
+</section>
+
+<section class="why-choose">
+  <h2>Why Choose Jai Jeen Mata Welding Workshop?</h2>
+  <ul>
+      <li>💎 High-Quality Materials: Built to last with superior-grade steel and metals.</li>
+      <li>🎨 Customized Designs: Tailored to match your specific needs and preferences.</li>
+      <li>⏱️ Timely Delivery: We value your time and ensure projects are completed as promised.</li>
+      <li>💰 Affordable Pricing: Premium work at competitive rates.</li>
+      <li>🛠️ Expert Craftsmanship: Years of experience and attention to detail in every project.</li>
+  </ul>
+</section>
+
+<section class="location">
+  <h2>Our Location</h2>
+  <p>📍 Dayabai Bypass Road, near Canal, close to Mili ka Gotar, Narnaul (Rewari)</p>
+  <p>Our convenient location ensures easy access for all customers in and around the Narnaul area.</p>
+</section>
+
+<section class="contact">
+  <h2>Let’s Bring Your Vision to Life!</h2>
+  <p>Whether it’s a sturdy gate, sleek railing, or a modern steel counter, Jai Jeen Mata Welding Workshop is your one-stop solution.</p>
+  <p>📞 <a href="tel:+YourPhoneNumber">Contact Us Today</a></p>
+  <p>🛠️ Visit Us at Our Workshop: Explore our craftsmanship and discuss your next project in detail!</p>
+</section>
+
+<footer>
+  <p>&copy; 2025 Jai Jeen Mata Welding Workshop. All Rights Reserved.</p>
+</footer>
+ 
+
+
+<!-- footer -->
+<footer>
+  <div class="footer-container">
+      <!-- Section 1 -->
+      <div class="footer-section">
+          <h4>About Business Profile</h4>
+          <ul>
+              <li><a href="#">Restaurants</a></li>
+              <li><a href="#">Retail</a></li>
+              <li><a href="#">Services</a></li>
+              <li><a href="#">Resources</a></li>
+              <li><a href="#">FAQ</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="footer-section">
+          <h4>Learning & Support</h4>
+          <ul>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Report a Spam Call</a></li>
+              <li><a href="#">The Digital Garage</a></li>
+              <li><a href="#">Primer</a></li>
+              <li><a href="#">Join User Studies</a></li>
+              <li><a href="#">Skillshop</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="footer-section">
+          <h4>Developers & Partners</h4>
+          <ul>
+              <li><a href="#">Business Profile APIs</a></li>
+              <li><a href="#">Google Developers Site</a></li>
+              <li><a href="#">Google Places API</a></li>
+              <li><a href="#">Business Profile Partners</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="footer-section">
+          <h4>Related Products</h4>
+          <ul>
+              <li><a href="#">Custom Iron / Steel work</a></li>
+              <li><a href="#">3D Animation / Video Editing</a></li>
+              <li><a href="#">Web Designing</a></li>
+              <li><a href="#">Wood Furnetur and Other</a></li>
+          </ul>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="footer-section contact-info">
+          <h4>Contact Info</h4>
+          <p>Jai Jeen Mata welding Workshop,</p>
+          <p> Ward 10,Daya Nagar(near pump house),Narnaul Bypass,Haryana,</p>
+          <p>Narnaul Pin 123001,</p>
+          <p>Email: hskharishsaini123@gmail.com</p>
+          <p>Call Us: +91 893 0037 7079</p>
+      </div>
+
+      <!-- Section 6 -->
+      <div class="footer-section social-icons">
+          <h4>Follow Us</h4>
+          <a href="#">LinkedIn</a>
+          <a href="#">YouTube</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+      </div>
+
+      <!-- Section 7 -->
+      <div class="footer-section partners">
+          <h4>Our Partners</h4>
+          <img src="aws-logo.png" alt="AWS">
+          <img src="widevine-logo.png" alt="Widevine">
+          <img src="playready-logo.png" alt="PlayReady">
+      </div>
+  </div>
+
+  <div class="footer-bottom">
+      <p>&copy; 2025 Your Company. All rights reserved. | Privacy | Terms</p>
+  </div>
+</footer>
+
+
+
+
+ 
+  <script src="script.js"></script>
+
+  <script>
+
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+  }
+}
+
+
+
+
+// 
+
+
+
+
+
+let currentSlide = 0;
+    const slides = <%- JSON.stringify(slides) %>; // Server-side data
+
+    if (slides && slides.length > 0) {
+      const slideElement = document.querySelector(".slide");
+      slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[currentSlide].name}')`;
+    }
+
+    function showSlide(index) {
+      const slideElement = document.querySelector(".slide");
+      if (slideElement && slides.length > 0) {
+        slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[index].name}')`;
+        slideElement.classList.add("active");
+      } else {
+        console.error("Slide element not found or slides array is empty!");
+      }
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length; // Cycle to next
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length; // Cycle back
+      showSlide(currentSlide);
+    }
+
+    // Automatically initialize first slide
+    if (slides && slides.length > 0) {
+      showSlide(currentSlide);
+    }
+
+    // Add event listeners for hover
+    const sliderElement = document.querySelector(".slider");
+
+    if (sliderElement) {
+      let slideshowInterval = setInterval(nextSlide, 8000); // Automatically change slides every 8 seconds
+
+      // Pause slideshow on hover
+      sliderElement.addEventListener("mouseenter", () => {
+        clearInterval(slideshowInterval); // Stop auto-slide
+      });
+
+      // Resume slideshow on hover out
+      sliderElement.addEventListener("mouseleave", () => {
+        slideshowInterval = setInterval(nextSlide, 8000); // Restart auto-slide
+      });
+    }
+
+
+
+    
+    
+    let currentSlide2 = 0;
+    const slides2 = <%- JSON.stringify(slides2) %>;
+    const slideNumberElement = document.getElementById("slide-number");
+
+    function showSlide2(index) {
+      const slideElement2 = document.querySelector(".slide2");
+      const imageProductUrl = document.querySelector(".image_product_url");  //
+      if (slideElement2 && slides2.length > 0) {
+        slideElement2.style.backgroundImage = `url('./images/uploded_image/${slides2[index].name}')`;
+        imageProductUrl.setAttribute('href', `/product_details?image=${slides2[index].name}`);
+
+        slideNumberElement.textContent = `${index + 1} / ${slides2.length}`;
+
+         
+      } else {
+        console.error("Slide2 element not found or slides2 array is empty!");
+      }
+    }
+
+    function nextSlide2() {
+      currentSlide2 = (currentSlide2 + 1) % slides2.length;
+      showSlide2(currentSlide2);
+    }
+
+    function prevSlide2() {
+      currentSlide2 = (currentSlide2 - 1 + slides2.length) % slides2.length;
+      showSlide2(currentSlide2);
+    }
+
+    if (slides2 && slides2.length > 0) {
+      showSlide2(currentSlide2);
+    }
+
+    const sliderElement2 = document.querySelector(".slider2");
+
+    if (sliderElement2) {
+      let slideshowInterval2 = setInterval(nextSlide2, 4000);
+      sliderElement2.addEventListener("mouseenter", () => clearInterval(slideshowInterval2));
+      sliderElement2.addEventListener("mouseleave", () => slideshowInterval2 = setInterval(nextSlide2, 4000));
+    }
+
+
+
+   
+
+  </script>
+</body>
+
+</html>
+
+
+
+<!--  -->
+/* General Styles */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #DFDCE3
+}
+
+h2 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Header Section */
+.header {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 25px;
+}
+
+
+
+
+
+
+
+.active {
+  /* border-radius: 20px; */
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5f584a3b;
+  padding: 14px 17px;
+  margin: 17px auto;
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+  border-radius: 10px;
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: red;
+  /* Neutral color */
+  text-transform: uppercase;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  /* Space between navigation items */
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  display: inline-block;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #fff;
+  background-color: #ff0057;
+  /* Accent color */
+}
+
+/* Slider Section */
+.slider {
+  position: relative;
+  height: 100%;
+  transition: background-image 0.8s ease-in-out;
+  /* Smooth transition for image change */
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  /* Smooth fade effect */
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+
+.slider-title {
+  position: absolute;
+  bottom: -19px;
+  left: 2px;
+  color: white;
+  font-size: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.btn {
+  position: absolute;
+  bottom: 5px;
+  right: 2px;
+
+  width: 3rem;
+  /* Set the desired width of the div */
+  height: 3rem;
+  ;
+  /* Set the desired height of the div */
+  overflow: hidden;
+  /* Prevent overflow */
+  display: flex;
+  /* Center the image */
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+}
+
+.btn img {
+  max-width: 100%;
+  /* Scale the image to fit the width of the div */
+  max-height: 100%;
+  /* Scale the image to fit the height of the div */
+  object-fit: contain;
+  /* Maintain the aspect ratio of the image */
+}
+
+/* Navigation Buttons (Rectangle to Circle) */
+.prev,
+.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* Circle shape */
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.prev:hover,
+.next:hover {
+  background: rgba(0, 0, 0, 0.7);
+  /* Darker hover effect */
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+
+.prev2,
+.next2 {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  /* Circle shape */
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.prev2:hover,
+.next2:hover {
+  background: rgba(0, 0, 0, 0.7);
+  /* Darker hover effect */
+}
+
+.prev2 {
+  left: 10px;
+}
+
+.next2 {
+  right: 10px;
+}
+
+
+
+
+
+
+
+/* Product Range */
+
+.product-range {
+  text-align: center;
+  padding: 20px;
+  margin-top: 60px;
+}
+
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.product {
+  position: relative;
+  text-decoration: none;
+  color: white;
+  width: 150px;
+  /* Fixed width */
+  height: 150px;
+  /* Fixed height */
+  overflow: hidden;
+  border-radius: 10px;
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  /* Align text at the bottom */
+}
+
+.product img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* border-radius: 10px; */
+  border-radius: 65px;
+}
+
+.product span {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 5px;
+  width: 90%;
+  /* Ensure consistent text alignment */
+}
+
+.product:hover {
+  transform: scale(1.1);
+}
+
+.product:hover span {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+
+
+/* 2 section */
+.image_up {
+  margin-top: 5px;
+}
+
+
+.carousel-section {
+  padding: 20px;
+  background-color: #DFDCE3;
+  margin-top: 30px;
+  margin-bottom: 60px;
+}
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /* Space between each row */
+}
+
+.carousel-track {
+  display: flex;
+  gap: 10px;
+  /* Space between images in a row */
+  overflow-x: auto;
+  /* Enable horizontal scrolling for each track */
+  scroll-snap-type: x mandatory;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+  /* Hide horizontal scrollbar for cleaner design */
+}
+
+.carousel-item {
+  min-width: 226px;
+  height: 165px;
+  /* Uniform height for all images */
+  background-size: cover;
+  background-position: center;
+  border-radius: 20px;
+  /* Rounded corners for a polished look */
+  flex-shrink: 0;
+  /* Prevent items from shrinking */
+  scroll-snap-align: start;
+  /* Ensure alignment at the start of scrolling */
+  transition: transform 0.3s ease;
+}
+
+.carousel-item:hover {
+  transform: scale(1.05);
+  /* Slightly enlarge on hover for better interaction */
+}
+
+/* 4 section  */
+/* General styles for slider2 */
+.slider2 {
+  padding-left: .2rem;
+  padding-right: .2rem;
+  position: relative;
+  margin: 20px auto;
+  /* Add space around the slider */
+  max-width: 900px;
+  /* Set a max width for the slider */
+  height: 350px;
+  /* Set the height of the slider */
+  overflow: hidden;
+  /* border-radius: 10px; */
+  /* Rounded corners */
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  */
+  background-color: #DFDCE3;
+  /* Fallback color */
+}
+
+/* Slide styles */
+.slide2 {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  /* Cover the entire slide area */
+  background-position: center;
+  transition: background-image 1s ease-in-out;
+  /* Smooth image transition */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: #DFDCE3;
+  border-radius: 25px;
+}
+
+/* Button inside the slide */
+.slide2 .btn {
+  position: absolute;
+  bottom: 4px;
+  /* Position the button near the bottom */
+  background-color: #e44242e0;
+  /* Button color */
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 70px;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.slide2 .btn:hover {
+  background-color: #ff3d3d;
+  /* Darken on hover */
+  transform: scale(1.1);
+  /* Slight zoom effect */
+}
+
+/* Navigation buttons */
+.slider2 .prev,
+.slider2 .next {
+  position: absolute;
+  top: 50%;
+  /* Center vertically */
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent background */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 50%;
+  /* Circular buttons */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.slider2 .prev {
+  left: 10px;
+  /* Position on the left */
+}
+
+.slider2 .next {
+  right: 10px;
+  /* Position on the right */
+}
+
+.slider2 .prev:hover,
+.slider2 .next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  /* Darken on hover */
+}
+
+/* Slide number at the top-right corner */
+.slide-number {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+
+
+
+
+/* 6 section */
+.trust-section {
+  background-color: #f9f9f9;
+  /* Light gray background */
+
+  padding: 40px 20px;
+  /* Spacing around content */
+  text-align: center;
+  /* Center-align text */
+  border-top: 3px solid #ff6f61;
+  /* Accent border at the top */
+  border-radius: 10px;
+  /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for depth */
+  margin: 40px auto;
+  /* Center on the page */
+  max-width: 100%;
+  /* Limit content width */
+}
+
+.trust-section .content-wrapper h2 {
+  font-size: 2rem;
+  /* Large heading size */
+  color: #333;
+  /* Darker text color */
+  margin-bottom: 20px;
+  /* Space below heading */
+  font-weight: bold;
+}
+
+.trust-section .content-wrapper p {
+  font-size: 1.2rem;
+  /* Slightly larger paragraph text */
+  color: #555;
+  /* Subtle text color */
+  line-height: 1.6;
+  /* Improve readability */
+  margin: 0;
+  /* Remove margin */
+}
+
+/* 7 section */
+.about-us {
+  padding: 30px;
+  background-color: #f8f9fa;
+  /* Light background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow */
+  margin: 20px auto;
+  max-width: 800px;
+  /* Center and limit width */
+  text-align: center;
+  /* Center-align text */
+}
+
+.about-us h2 {
+  font-size: 2rem;
+  color: #333;
+  /* Dark text */
+  margin-bottom: 15px;
+}
+
+.about-us h2 span {
+  color: #d9534f;
+  /* Highlight business name in a distinct color */
+  font-weight: bold;
+}
+
+.about-us p {
+  font-size: 1rem;
+  color: #555;
+  /* Slightly lighter text for paragraphs */
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.about-us strong {
+  color: #d9534f;
+  /* Highlight key terms */
+  font-weight: bold;
+}
+
+.about-us .content {
+  padding: 10px;
+}
+
+/*  */
+.admin_image {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.menu-icon {
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 10px;
+  margin: 3px;
+  /* background-color: #ff0057; */
+  color: white;
+  border-radius: 5px;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.menu-icon:hover {
+  color: #ff0057;
+}
+
+/* Menu Styles */
+.menu {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #ffffffe0;
+  width: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  display: none;
+  z-index: 1;
+}
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu ul li {
+  border-bottom: 1px solid #ddd;
+}
+
+.menu ul li:last-child {
+  border-bottom: none;
+}
+
+.menu ul li a {
+  display: block;
+  padding: 15px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.menu ul li a:hover {
+  background-color: #ff0057;
+  color: white;
+}
+
+
+/*  */
+footer {
+  background-color: #DFDCE3;
+  padding: 20px;
+  color: #333;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.footer-section {
+  flex: 1 1 200px;
+  margin: 10px;
+}
+
+.footer-section h4 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #000;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin: 5px 0;
+}
+
+.footer-section li {
+  border-bottom: 1px solid #ddd;
+
+}
+
+.footer-section ul li a {
+  /* text-decoration: none; */
+  color: #333;
+  /* border-bottom: 1px solid #ddd; */
+
+}
+
+.footer-section ul li a:hover {
+  text-decoration: underline;
+}
+
+.contact-info,
+.partners {
+  text-align: left;
+}
+
+.contact-info p,
+.partners img {
+  margin: 5px 0;
+}
+
+.social-icons a {
+  margin-right: 10px;
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+}
+
+.social-icons a:hover {
+  color: #0073e6;
+}
+
+.footer-bottom {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+
+
+/*  */
+.about {
+  background-color: #004080;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.about h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.about p {
+  margin: 5px 0;
+  font-size: 1.2rem;
+}
+
+.services .why-choose .location {
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 1200px;
+  /* background: #fff; */
+  background-color: #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 20px;
+
+
+}
+
+
+h2 {
+  color: #004080;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 1rem;
+
+  /* padding: 0; */
+}
+
+ul li {
+  padding: 10px 0;
+}
+
+ul li:last-child {
+  border-bottom: none;
+}
+
+.contact {
+  text-align: center;
+  padding: 20px 0;
+  background-color: #004080;
+  color: #fff;
+}
+
+.contact a {
+  color: #ffd700;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.contact a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  /* background-color: #333; */
+  /* color: #fff; */
+}
+
+.location p {
+  margin-left: .5rem;
+  font-size: 0.9rem;
+}
+
+
+
+
+/* @media (max-width: 376px) {
+  .navbar {
+    flex-direction: column;
+
+  }
+  .nav-links{
+    gap: 33px;
+  }
+  .product {
+    width: 100px;
+    height: 100px;
+  }
+  .slider2 {
+    padding-left: .5rem;
+    padding-right: .5rem;
+    border-radius: 5px;
+  }
+ 
+  .nav-links a {
+    padding: 7px 0px;
+    font-size: .6rem;
+  }
+ 
+  .slider-title {
+    font-size: 1rem;
+    border-radius: 5px;
+}
+} */
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+    /* Show the element only in this range */
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .slider-title {
+    font-size: 1rem;
+    border-radius: 5px;
+
+  }
+
+  .prev {
+    display: none;
+  }
+
+  .next {
+    display: none;
+  }
+
+  .header {
+    padding-left: .1rem;
+    padding-right: .1rem;
+  }
+
+}
+
+
+@media (min-width: 768px) {
+  .menu-icon {
+    display: none;
+    /* Show the element only in this range */
+  }
+
+  .nav-links {
+    display: block;
+  }
+}

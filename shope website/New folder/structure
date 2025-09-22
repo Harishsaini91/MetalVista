@@ -1,0 +1,54 @@
+shope-website/
+│
+├── app.js                    # Main application entry point
+├── .env                      # Environment variables
+├── package.json              # Project metadata & dependencies
+├── package-lock.json         # Lock file
+│
+├── config/                   # Configuration files
+│   ├── db.js                 # Database connection setup
+│   └── ...                   # Other config (e.g., email, payment)
+│
+├── controllers/              # Route controllers (logic)
+│   ├── userController.js     
+│   ├── productController.js
+│   └── ...                   
+│
+├── middleware/               # Custom Express middleware (optional)
+│   └── auth.js               # Authentication/authorization logic
+│
+├── models/                   # Mongoose or ORM models
+│   ├── product.js
+│   ├── productExtraImage.js
+│   ├── productRange.js
+│   ├── productSideImage.js
+│   ├── topSlideImage.js
+│   └── user.js
+│
+├── public/                   # Static files (served directly)
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── routes/                   # Route definitions
+│   ├── userRoutes.js
+│   ├── productRoutes.js
+│   └── index.js              # (Optional) Aggregate all routes
+│
+├── views/                    # EJS view templates
+│   ├── shared/               # Common views
+│   │   ├── home_page.ejs
+│   │   └── aboutus.ejs
+│   │
+│   ├── users/                # User-related views
+│   │   ├── sign_in.ejs
+│   │   └── sign_up.ejs
+│   │
+│   ├── products/             # Product-related views
+│   │   ├── product_details.ejs
+│   │   └── product_pages.ejs
+│   │
+│   └── upload_err.ejs        # Error view
+│
+└── utils/                    # (Optional) Helper functions
+    └── fileUploader.js

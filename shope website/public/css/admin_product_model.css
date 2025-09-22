@@ -1,0 +1,123 @@
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    padding: 30px;
+    background: #f9f9f9;
+    color: #333;
+  }
+
+  h2 {
+    color: #2a2a2a;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    margin-top: 30px;
+    font-size: 1.3em;
+    color: #333;
+  }
+
+  form {
+    margin-bottom: 20px;
+  }
+
+  input[type="text"], select {
+    padding: 8px 12px;
+    margin: 5px 8px 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: auto;
+    min-width: 180px;
+  }
+
+  button {
+    background-color: #2d8cf0;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #1a73e8;
+  }
+
+  .field-block {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .field-block ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .field-block li {
+    padding: 4px 0;
+  }
+
+  .field-block form {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  .field-group {
+    margin-top: 20px;
+  }
+
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+  }
+
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .option {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s ease;
+  }
+
+  .option input[type="checkbox"] {
+    margin-right: 6px;
+  }
+
+  .option.active {
+    background-color: #e0f7da;
+    border-color: #80d28b;
+    font-weight: bold;
+  }
+
+  .option.inactive {
+    background-color: #f0f0f0;
+    color: #999;
+  }
+
+  .add-box {
+    margin-top: 10px;
+  }
+
+  .add-box input[type="text"] {
+    width: 220px;
+  }
+
+  hr {
+    margin: 30px 0;
+  }

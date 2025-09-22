@@ -1,0 +1,109 @@
+const express = require('express');
+const router = express.Router();
+const productController = require('../controller/productController');
+ const ProductModelData = require('../models/product_model_data');
+
+
+const ProductModelSchema = require('../models/ProductModelSchema');
+
+router.get('/model-editor', async (req, res) => {
+  const model = await ProductModelSchema.findOne();
+  res.render('admin_product_model', { model });
+});
+
+
+router.post('/model-editor/save', async (req, res) => {
+  const formData = req.body;
+
+  let schema = await ProductModelSchema.findOne();
+  if (!schema) schema = new ProductModelSchema();
+
+  // Loop over submitted checkboxes
+  for (const [fieldName, rawValues] of Object.entries(formData)) {
+    const values = Array.isArray(rawValues) ? rawValues : [rawValues];
+
+    let field = schema.fields.find(f => f.name === fieldName);
+    if (!field) {
+      field = { name: fieldName, values: [] };
+      schema.fields.push(field);
+    }
+
+    for (const value of values) {
+      if (value && !field.values.includes(value)) {
+        field.values.push(value);
+      }
+    }
+  }
+
+  schema.lastUpdated = new Date();
+  await schema.save();
+
+  res.redirect('/products/model-editor');
+});
+
+
+
+router.post('/model-editor/add-field', async (req, res) => {
+  const { name, type, unit, description } = req.body;
+
+  let schema = await ProductModelSchema.findOne();
+  if (!schema) schema = new ProductModelSchema();
+
+  const exists = schema.fields.some(f => f.name === name);
+  if (!exists) {
+    schema.fields.push({
+      name,
+      type: type || 'text',
+      unit,
+      description,
+      values: []
+    });
+    schema.lastUpdated = new Date();
+    await schema.save();
+  }
+
+  res.redirect('/products/model-editor');
+});
+
+
+
+
+
+router.get('/full-entry', async (req, res) => {
+  const model = await ProductModelSchema.findOne();
+  res.render('product_full_entry', { model }); // Or whatever file name you used
+});
+
+
+
+
+router.post('/save-model-data', async (req, res) => {
+  const { imageId, imageName, ...fields } = req.body;
+
+  if (!imageId || !imageName) {
+    return res.status(400).send("Image not set. Upload first.");
+  }
+
+  const selectedFields = {};
+  for (const [key, value] of Object.entries(fields)) {
+    selectedFields[key] = Array.isArray(value) ? value : [value];
+  }
+
+  await ProductModelData.create({
+    productId: imageId,
+    imageName,
+    selectedFields
+  });
+
+  res.send("✅ Field data saved!");
+});
+
+
+
+
+
+
+
+
+
+module.exports = router;

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #viewer-container {
+            width: 60%;
+            aspect-ratio: 16/9; /* Maintain a 16:9 ratio */
+            padding: 20px;
+            border: 4px solid black;
+            border-radius: 15px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Add subtle shadow */
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <div id="viewer-container">
+        <script>
+            // Set up the scene, camera, and renderer
+            const scene = new THREE.Scene();
+
+            const camera = new THREE.PerspectiveCamera(75, 16 / 9, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // Enable transparency
+            renderer.setSize(window.innerWidth * 0.55, window.innerHeight * 0.55); // Small box size
+            document.querySelector("#viewer-container").appendChild(renderer.domElement);
+
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Brighter ambient light
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 3, 50); // Intense point light
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            // Load the 3D model using GLTFLoader
+            const loader = new THREE.GLTFLoader();
+            let model;
+
+            loader.load(
+                './images/3d/BAG.glb', // Path to the model file
+                (gltf) => {
+                    model = gltf.scene;
+                    scene.add(model);
+                    model.position.set(0, -1, 0); // Adjust model position
+                    model.scale.set(1.5, 1.5, 1.5); // Scale the model
+                },
+                undefined,
+                (error) => {
+                    console.error('Error loading the model:', error);
+                }
+            );
+
+            // Set the camera position
+            camera.position.set(0, 2, 6); // Keep the camera away for a clear view
+            camera.lookAt(0, 0, 0); // Fix the camera to always look at the center
+
+            // Set up OrbitControls to allow user interaction
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // Smooth rotation
+            controls.dampingFactor = 0.1;
+            controls.enableZoom = true; // Enable zoom in/out
+            controls.zoomSpeed = 1.2; // Adjust zoom speed
+            controls.minDistance = 2; // Minimum zoom distance
+            controls.maxDistance = 10; // Maximum zoom distance
+            controls.enablePan = false; // Disable panning
+            controls.minPolarAngle = Math.PI / 2; // Lock vertical rotation
+            controls.maxPolarAngle = Math.PI / 2; // Lock vertical rotation
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Rotate the model (if it exists) automatically on Z-axis
+                if (model) {
+                    model.rotation.y += 0.01; // Rotate automatically around the Z-axis
+                }
+
+                // Update controls (required for smooth damping)
+                controls.update();
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const container = document.querySelector("#viewer-container");
+                const width = container.offsetWidth;
+                const height = container.offsetHeight;
+
+                renderer.setSize(width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            });
+        </script>
+    </div>
+</body>
+</html>

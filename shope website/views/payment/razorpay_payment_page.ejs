@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pay with Razorpay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+  <h2>Pay Now</h2>
+  <p>Amount: ₹<%= (order.amount/100).toFixed(2) %></p>
+
+  <button id="rzp-button">Pay ₹<%= order.amount / 100 %></button>
+
+  <!-- DEV simulate buttons (remove in production) -->
+  <div style="margin-top:16px;">
+    <a href="/payments/dev/simulate?id=<%= paymentId %>&result=success">Simulate Success</a> |
+    <a href="/payments/dev/simulate?id=<%= paymentId %>&result=fail">Simulate Fail</a>
+  </div>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    const options = {
+      key: "<%= keyId %>",
+      amount: "<%= order.amount %>",
+      currency: "INR",
+      order_id: "<%= order.id %>",
+      handler: function (response) {
+        // Redirect back to our server for signature verification
+        window.location.href =
+          `/payments/verify?payment_id=${response.razorpay_payment_id}` +
+          `&order_id=${response.razorpay_order_id}` +
+          `&signature=${response.razorpay_signature}` +
+          `&id=<%= paymentId %>`;
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function (e) {
+      rzp.open();
+      e.preventDefault();
+    }
+  </script>
+</body>
+</html>

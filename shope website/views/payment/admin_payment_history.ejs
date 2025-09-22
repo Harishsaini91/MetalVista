@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>All User Payments</h2>
+<table>
+  <thead>
+    <tr>
+      <th>User</th><th>Date</th><th>Amount</th><th>Status</th><th>Order</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% payments.forEach(p => { %>
+      <tr>
+        <td><%= p.details.userName %></td>
+        <td><%= p.createdAt.toLocaleDateString() %></td>
+        <td>₹<%= p.amount %></td>
+        <td><%= p.status %></td>
+        <td><%= p.details.orderName %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+    
+</body>
+</html>

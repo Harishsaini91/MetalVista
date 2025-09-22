@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Chat</title>
+    <link rel="stylesheet" href="/css/chat.css">
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Admin Chat Dashboard</h2>
+        </div>
+
+        <h3>Active Chat Rooms</h3>
+        <ul class="admin-rooms-list">
+            <% rooms.forEach(room=> { %>
+                <li onclick="window.location.href='/admin/chat/<%= room._id %>'">
+                    <%= room.userId ? room.userId.gmail : 'Unknown User' %> - <%= room.updatedAt.toLocaleString() %>
+                            <% if (room.status==='active' ) { %>
+                                <span style="color: green;">(Active)</span>
+                                <% } %>
+                </li>
+                <% }); %>
+
+        </ul>
+    </div>
+</body>
+
+</html>

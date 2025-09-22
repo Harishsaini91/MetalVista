@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat with Support</title>
+  <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h2>Chat with Support</h2>
+    </div>
+    
+    <div id="chat-messages">
+      <% chats.forEach(chat => { %>
+        <div class="message <%= chat.sender._id.equals(user._id) ? 'sent' : 'received' %>">
+          <div class="message-sender"><%= chat.sender.gmail %></div>
+          <% if (chat.message) { %>
+            <div class="message-text"><%= chat.message %></div>
+          <% } else if (chat.file) { %>
+            <% if (chat.fileType === 'image') { %>
+              <img src="/images/uploded_image/<%= chat.file %>" alt="Uploaded image" class="chat-file">
+            <% } else if (chat.fileType === 'video') { %>
+              <video controls class="chat-file">
+                <source src="/images/uploded_image/<%= chat.file %>" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            <% } else if (chat.fileType === 'document') { %>
+              <a href="/images/uploded_image/<%= chat.file %>" target="_blank" class="chat-file">Download Document</a>
+            <% } else if (chat.fileType === 'audio') { %>
+              <audio controls class="chat-file">
+                <source src="/images/uploded_image/<%= chat.file %>" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+            <% } else { %>
+              <a href="/images/uploded_image/<%= chat.file %>" target="_blank" class="chat-file">Download File</a>
+            <% } %>
+          <% } %>
+          <div class="message-time"><%= chat.timestamp.toLocaleTimeString() %></div>
+        </div>
+      <% }); %>
+    </div>
+    
+    <form id="chat-form">
+      <input type="hidden" id="room-id" value="<%= room._id %>">
+      <input type="hidden" id="current-user-id" value="<%= user._id %>">
+      <input type="text" id="message-input" placeholder="Type your message...">
+      <button type="submit">Send</button>
+    </form>
+    
+    <form id="file-form" enctype="multipart/form-data">
+      <input type="file" id="file-input" name="file">
+      <button type="submit">Upload File</button>
+    </form>
+  </div>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>

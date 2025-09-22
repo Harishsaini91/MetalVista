@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website</title>
+  <link rel="stylesheet" href="../css/product_details.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <!-- Slider Section -->
+    <div class="slider">
+      <% if (slides && slides.length > 0) { %>
+        <div class="slide" style="background-image: url('./images/uploded_image/<%= slides[0].name %>');">
+
+          <nav class="navbar">
+            <div class="logo">Logo</div>
+
+            <div id="overlay"></div>
+
+            <div class="search-container">
+              <input type="text" id="searchBar" placeholder="Search products..." />
+              <div id="suggestions"></div>
+            </div>
+            
+            <div id="results"></div>
+              <!-- <div id="results"></div> -->
+            <!-- </div> -->
+            
+            <ul class="nav-links  " >
+              <li><a href="/home">Home</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/product">Products</a></li>
+              <li><a href="/contact">Contact</a></li>
+              <li><a href="sign_in" onclick="openLoginWindow()">Sign in</a></li>
+            </ul>
+            <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
+
+            <!-- Menu -->
+            <div class="menu background-icons" id="menu">
+              <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/product">Product</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li><a href="/sign_in">Sign In</a></li>
+              </ul>
+            </div>
+            
+          </nav>
+
+          <h4 class="slider-title">
+            <span class="welcome-text">Welcome to My Workshop</span><br>
+            Jai Jeen Mata Welding Workshop<br>
+            Contact No. 8901501481
+          </h4> 
+
+          <a href=https://maps.app.goo.gl/U28yWXRhCx8EbUCf8 class="btn" target="_blank"><img src="./images/logo/location.svg" alt=""></a>
+        </div>
+      <% } %>
+      <button class="prev" onclick="prevSlide()">&#10094;</button>
+      <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+  </header>
+
+  <!-- text info -->
+
+  <section class="product-detail">
+    <div class="product-container">
+      <h2 class="product-title">UltraSoft Memory Foam Pillow</h2>
+      <p class="product-description">
+        Experience unparalleled comfort and support with the UltraSoft Memory Foam Pillow. Crafted with premium-quality
+        memory foam, it molds to your head and neck to provide optimal support and alignment, ensuring a restful night’s
+        sleep.
+      </p>
+      <h3 class="product-features-title">Key Features:</h3>
+      <ul class="product-features">
+        <li>Premium memory foam for maximum comfort.</li>
+        <li>Breathable fabric cover, removable and washable.</li>
+        <li>Suitable for all sleeping positions (back, side, stomach).</li>
+        <li>Hypoallergenic and dust-mite resistant.</li>
+        <li>Standard and king sizes available.</li>
+      </ul>
+    </div>
+  </section>
+
+
+
+  <!-- 4 section -->
+
+  <section>
+    <div class="slider2">
+      <div class="slide2" style="background-image: url('./images/uploded_image/<%=imageName %>');">
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+  <!-- Third Section  <section class="carousel-section">
+    <div class="carousel">
+      Sliding bar -->
+      <div class="carousel-track">
+        <!-- Main product image -->
+        <a class="carousel-item"
+           style="background-image: url('./images/uploded_image/<%= imageName %>');"
+           onclick="slide2change('<%= imageName %>')"></a>
+  
+        <!-- Extra images -->
+        <% if (extra_image && extra_image[0]?.extra_image_name?.length > 0) { %>
+          <% extra_image[0].extra_image_name.forEach((img) => { %>
+            <a class="carousel-item"
+               style="background-image: url('./images/uploded_image/<%= img %>');"
+               onclick="slide2change('<%= img %>')"></a>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+  
+    <!-- Admin upload form -->
+    <% if (userRole == 'admin') { %>
+      <form action="/product_details" method="post" enctype="multipart/form-data" class="admin_image">
+        <div class="input-group" id="file_here">
+          <input type="file" id="image" name="images" multiple required> <!-- Multiple images -->
+          <input type="hidden" name="extra_image" value="<%= imageName %>"> <!-- Hidden field for product name -->
+          <button type="submit">Upload</button>
+        </div>
+      </form>
+
+
+      <div class="delete-section">
+        <form action='/delete_image' method="post" >
+    
+          <!-- The input field to display the current image name -->
+          <input type="text" id="currentImageName" value="" name="imageName" readonly>
+          <input type="hidden" name="slide3" value="3">
+          <button type="submit" class="image_up"   >Delete</button>
+        </form>
+      </div>
+    
+    
+    <% } %>
+  </section>
+   
+
+
+  <!-- 3d object -->
+
+  <section class="section_3d">
+
+    <div id="viewer-container">
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Product Range Section -->
+
+  <section class="product-range">
+    <h2>Product Range</h2>
+    <div class="products">
+      <a href="product" class="product">
+        <img src='./images/product_range_image/indoor.jfif' alt="Indoor Itoms">
+        <span>Indoor Itoms</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/outdoor.jfif' alt="Outdoor Itoms">
+        <span>Outdoor Itoms</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/counter.jfif' alt="Counter">
+        <span>Counter</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/art.jfif' alt="3D Art">
+        <span>3D Art</span>
+      </a>
+      <a href="product" class="product">
+        <img src='./images/product_range_image/other.jfif' alt="Other">
+        <span>Other</span>
+      </a>
+    </div>
+  </section>
+  
+  <!--       ////////// -->
+  <script src="script.js"></script>
+
+
+  <script>
+
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+  }
+}
+
+
+
+    
+let currentSlide = 0;
+const slides = <%- JSON.stringify(slides) %>; // Server-side data
+
+if (slides && slides.length > 0) {
+  const slideElement = document.querySelector(".slide");
+  slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[currentSlide].name}')`;
+}
+
+function showSlide(index) {
+  const slideElement = document.querySelector(".slide");
+  if (slideElement && slides.length > 0) {
+    slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[index].name}')`;
+    slideElement.classList.add("active");
+  } else {
+    console.error("Slide element not found or slides array is empty!");
+  }
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % slides.length; // Cycle to next
+  showSlide(currentSlide);
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + slides.length) % slides.length; // Cycle back
+  showSlide(currentSlide);
+}
+
+// Automatically initialize first slide
+if (slides && slides.length > 0) {
+  showSlide(currentSlide);
+}
+
+// Add event listeners for hover
+const sliderElement = document.querySelector(".slider");
+
+if (sliderElement) {
+  let slideshowInterval = setInterval(nextSlide, 8000); // Automatically change slides every 4 seconds
+
+  // Pause slideshow on hover
+  sliderElement.addEventListener("mouseenter", () => {
+    clearInterval(slideshowInterval); // Stop auto-slide
+  });
+
+  // Resume slideshow on hover out
+  sliderElement.addEventListener("mouseleave", () => {
+    slideshowInterval = setInterval(nextSlide, 8000); // Restart auto-slide
+  });
+}
+
+
+
+
+
+    //  3d
+
+       //  3d
+// Initialize Scene, Camera, and Renderer
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, 16 / 9, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+// Set Renderer Properties
+const container = document.querySelector("#viewer-container");
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
+
+// Add Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 3, 50);
+pointLight.position.set(5, 5, 5);
+scene.add(pointLight);
+
+// Load 3D Model
+const loader = new THREE.GLTFLoader();
+let model;
+
+loader.load(
+  './3d/donat.glb', // Adjust path to your 3D model
+  (gltf) => {
+    model = gltf.scene;
+    scene.add(model);
+    model.position.set(0, -1, 0);
+    model.scale.set(1.5, 1.5, 1.5);
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading the model:', error);
+  }
+);
+
+// Set Camera Position
+camera.position.set(0, 2, 6);
+camera.lookAt(0, 0, 0);
+
+// Add OrbitControls
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.1;
+controls.enableZoom = true;
+controls.zoomSpeed = 1.2;
+controls.minDistance = 2;
+controls.maxDistance = 10;
+controls.enablePan = false;
+controls.minPolarAngle = Math.PI / 2;
+controls.maxPolarAngle = Math.PI / 2;
+
+// Animation Loop
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (model) {
+    model.rotation.y += 0.01; // Rotate model
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
+
+function toggleMenu() {
+  const menu = document.getElementById("menu");
+  menu.classList.toggle("show");  // Show or hide the menu when the icon is clicked
+}
+
+// Hide the menu when mouse moves outside
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById("menu");
+  const menuIcon = document.querySelector(".menu-icon");
+  
+  // Close the menu if the click is outside the menu or icon
+  if (!menu.contains(event.target) && event.target !== menuIcon) {
+    menu.classList.remove("show");
+  }
+});
+
+
+
+
+
+
+    // 
+   
+
+
+
+    // Function to change Slide 2 image
+function slide2change(image_name) {
+
+  const imageNameInput = document.getElementById("currentImageName");
+
+const imageName =  `${image_name}`;
+if (imageNameInput) {
+    imageNameInput.value = imageName; // Dynamically set the image name
+  }
+
+  const sliderImage = document.querySelector('.slide2');
+  sliderImage.style.backgroundImage = `url('./images/uploded_image/${image_name}')`;
+}
+
+// Select all carousel items and the slider2 image
+const carouselItems = document.querySelectorAll('.carousel-item');
+const sliderImage = document.querySelector('.slide2');
+
+// Add click event to each carousel item
+carouselItems.forEach(item => {
+  item.addEventListener('click', () => {
+    // Get the background image URL of the clicked item
+    const style = window.getComputedStyle(item);
+    const backgroundImage = style.backgroundImage;
+
+    // Set the background image of slider2
+    sliderImage.style.backgroundImage = backgroundImage;
+  });
+});
+
+
+// search bar
+
+
+  //  search bar
+  const products = [
+    {
+      id: 1,
+      name: "Apple iPhone 13",
+      category: "Electronics",
+      subNames: ["iPhone", "Apple", "Phone"],
+      imageUrl: "https://via.placeholder.com/150",
+    },
+    {
+      id: 2,
+      name: "Samsung Galaxy S23",
+      category: "Electronics",
+      subNames: ["Samsung", "Galaxy", "Android"],
+      imageUrl: "https://via.placeholder.com/150",
+    },
+    {
+      id: 3,
+      name: "Nike Running Shoes",
+      category: "Footwear",
+      subNames: ["Nike", "Running", "Shoes"],
+      imageUrl: "https://via.placeholder.com/150",
+    },
+  ];
+
+  const searchBar = document.getElementById("searchBar");
+  const suggestionsDiv = document.getElementById("suggestions");
+  const overlay = document.getElementById("overlay");
+  const resultsDiv = document.getElementById("results");
+
+  // Show overlay and suggestions on focus
+  searchBar.addEventListener("focus", () => {
+    overlay.style.display = "block";
+    suggestionsDiv.style.display = "block";
+  });
+
+  // Hide overlay and suggestions on blur
+  overlay.addEventListener("click", () => {
+    overlay.style.display = "none";
+    suggestionsDiv.style.display = "none";
+    searchBar.blur();
+  });
+
+  const showSuggestions = (query) => {
+    if (!query) {
+      suggestionsDiv.innerHTML = "";
+      suggestionsDiv.style.display = "none";
+      return;
+    }
+
+    const allSubNames = Array.from(
+      new Set(products.flatMap((product) => product.subNames))
+    );
+
+    const filteredSubNames = allSubNames.filter((subName) =>
+      subName.toLowerCase().includes(query.toLowerCase())
+    );
+
+    suggestionsDiv.innerHTML = filteredSubNames
+      .map((subName) => `<div class="suggestion-item">${subName}</div>`)
+      .join("");
+
+    suggestionsDiv.style.display = "block";
+
+    document.querySelectorAll(".suggestion-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        searchBar.value = item.textContent;
+        searchProducts(item.textContent);
+        overlay.style.display = "none";
+        suggestionsDiv.style.display = "none";
+        searchBar.blur();
+      });
+    });
+  };
+
+  const searchProducts = (query) => {
+    if (!query) return;
+
+    const matchedProducts = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.subNames.some((subName) =>
+          subName.toLowerCase().includes(query.toLowerCase())
+        )
+    );
+
+    resultsDiv.innerHTML = matchedProducts.length
+      ? matchedProducts
+          .map(
+            (product) => `
+        <div class="product">
+          <img src="${product.imageUrl}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>${product.category}</p>
+        </div>
+      `
+          )
+          .join("")
+      : "<p>No products found</p>";
+  };
+
+  searchBar.addEventListener("input", (e) => {
+    const query = e.target.value;
+    showSuggestions(query);
+  });
+
+
+  </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #DFDCE3
+  }
+  h2 {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+/* Header Section */
+.header {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 25px;
+}
+
+
+
+
+
+
+
+.active {
+  /* border-radius: 20px; */
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5f584a3b;
+  padding: 14px 17px;
+  margin: 17px auto;
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+  border-radius: 10px;
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: red;
+  /* Neutral color */
+  text-transform: uppercase;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  /* Space between navigation items */
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  display: inline-block;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #fff;
+  background-color: #ff0057;
+  /* Accent color */
+}
+
+/* Slider Section */
+.slider {
+  position: relative;
+  height: 100%;
+  transition: background-image 0.8s ease-in-out;
+  /* Smooth transition for image change */
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  /* Smooth fade effect */
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+
+.slider-title {
+  position: absolute;
+  bottom: -19px;
+  left: 2px;
+  color: white;
+  font-size: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.btn {
+  position: absolute;
+  bottom: 5px;
+  right: 2px;
+
+  width: 5rem;
+  /* Set the desired width of the div */
+  height: 5rem;
+  ;
+  /* Set the desired height of the div */
+  overflow: hidden;
+  /* Prevent overflow */
+  display: flex;
+  /* Center the image */
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+}
+
+.btn img {
+  max-width: 100%;
+  /* Scale the image to fit the width of the div */
+  max-height: 100%;
+  /* Scale the image to fit the height of the div */
+  object-fit: contain;
+  /* Maintain the aspect ratio of the image */
+}
+
+/* Navigation Buttons (Rectangle to Circle) */
+.prev,
+.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* Circle shape */
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.prev:hover,
+.next:hover {
+  background: rgba(0, 0, 0, 0.7);
+  /* Darker hover effect */
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+  
+  /* Product Range */
+
+  .product-range {
+    text-align: center;
+    padding: 20px;
+    margin-top: 60px;
+  }
+  
+  .products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  
+  .product {
+    position: relative;
+    text-decoration: none;
+    color: white;
+    width: 150px; /* Fixed width */
+    height: 150px; /* Fixed height */
+    overflow: hidden;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; /* Align text at the bottom */
+  }
+  
+  .product img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* border-radius: 10px; */
+    border-radius: 65px;
+  }
+  
+  .product span {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 5px;
+    width: 90%; /* Ensure consistent text alignment */
+  }
+  
+  .product:hover {
+    transform: scale(1.1);
+  }
+  
+  .product:hover span {
+    background: rgba(0, 0, 0, 0.8);
+  }
+   
+
+
+  /* 2 section */
+
+  .carousel-section {
+    padding: 20px;
+   background-color: #DFDCE3;
+   /* margin-top: 30px; */
+   margin-bottom: 60px;
+  }
+  
+  .carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between each row */
+  }
+  
+  .carousel-track {
+    display: flex;
+    gap: 10px; /* Space between images in a row */
+    overflow-x: auto; /* Enable horizontal scrolling for each track */
+    scroll-snap-type: x mandatory;
+  }
+  
+  .carousel-track::-webkit-scrollbar {
+    display: none; /* Hide horizontal scrollbar for cleaner design */
+  }
+  
+  .carousel-item {
+    min-width: 226px;
+    height: 165px; /* Uniform height for all images */
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px; /* Rounded corners for a polished look */
+    flex-shrink: 0; /* Prevent items from shrinking */
+    scroll-snap-align: start; /* Ensure alignment at the start of scrolling */
+    transition: transform 0.3s ease;
+  }
+  
+  .carousel-item:hover {
+    transform: scale(1.05); /* Slightly enlarge on hover for better interaction */
+  }
+    
+  /* 4 section  *//* General styles for slider2 */
+.slider2 {
+  padding-left: .2rem;
+  padding-right: .2rem;
+    position: relative;
+    margin: 20px auto; /* Add space around the slider */
+    max-width: 900px; /* Set a max width for the slider */
+    height: 350px; /* Set the height of the slider */
+    overflow: hidden;
+    border-radius: 10px; /* Rounded corners */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  */
+    background-color:#DFDCE3; /* Fallback color */
+  }
+  
+  /* Slide styles */
+  .slide2 {
+    width: 100%;
+    height: 100%;
+    background-size: cover; /* Cover the entire slide area */
+    background-position: center;
+    transition: background-image 1s ease-in-out; /* Smooth image transition */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: #DFDCE3;
+    border-radius: 25px;
+  }
+  
+  /* Button inside the slide */
+  .slide2 .btn {
+    position: absolute;
+    bottom: 20px;  
+    background-color: #ff6f61;  
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .slide2 .btn:hover {
+    background-color: #ff3d3d; /* Darken on hover */
+    transform: scale(1.1); /* Slight zoom effect */
+  }
+  
+  /* Navigation buttons */
+  .slider2 .prev,
+  .slider2 .next {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%; /* Circular buttons */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .slider2 .prev {
+    left: 10px; /* Position on the left */
+  }
+  
+  .slider2 .next {
+    right: 10px; /* Position on the right */
+  }
+  
+  .slider2 .prev:hover,
+  .slider2 .next:hover {
+    background-color: rgba(0, 0, 0, 0.8); /* Darken on hover */
+  }
+  
+  /* Slide number at the top-right corner */
+  .slide-number {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+   
+
+/* 3D Section Styling */
+/* 3D Viewer Section */
+.section_3d {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh; /* Full viewport height for centering */
+  background-color: #DFDCE3; /* Optional background color */
+}
+
+/* Viewer Container Styling */
+#viewer-container {
+  width: 100%; /* Full width */
+  height: 400px; /* Fixed height */
+  margin: 20px; /* Margin around the container */
+  /* border: 4px solid black; */
+  border-radius: 15px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); */
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/*  */
+.admin_image {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.menu-icon {
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 10px;
+  margin: 3px;
+  color: white;
+  border-radius: 5px;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.menu-icon:hover {
+  color: #ff0057;
+}
+/* Menu styles */
+.menu {
+  position: absolute;
+  top: 73px;
+  right: 0px;
+  background-color: #ffffffe0;
+  width: 166px;
+  display: none;  /* Hide by default */
+  z-index: 999;
+}
+
+.menu.show {
+  display: block;  /* Show when the 'show' class is added */
+}
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* .menu ul li {
+  border-bottom: 1px solid #ddd;
+} */
+
+.menu ul li a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.menu ul li a:hover {
+  background-color: #ff0057;
+  color: white;
+}
+
+ 
+/* Section container product details */
+.product-detail {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Title styles */
+.product-title {
+  font-size: 28px;
+  color: #007BFF;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Description styles */
+.product-description {
+  font-size: 16px;
+  margin-bottom: 20px;
+  text-align: justify;
+  line-height: 1.8;
+}
+
+/* Features section */
+.product-features-title {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.product-features {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.product-features li {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+
+/*  search bar*/
+
+
+.search-container {
+  display: flex;
+  position: relative;
+justify-content: center;
+align-items: center;
+  width:311px;
+  z-index: 10;
+  /* margin-left: 10px; */
+  /* margin-right: 10px; */
+  left: -6px;
+}
+
+#searchBar {
+  width:100% ;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  transition: 0.3s ease-in-out;
+  z-index: 10;
+  position: relative;
+}
+#searchBar:focus {
+  width: 100%;
+  border-radius: 0;
+  border: none;
+  outline: none;
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 50px;
+  z-index: 1000;
+  font-size: 18px;
+  padding: 10px 15px;
+}
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+#suggestions {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+}
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+.suggestion-item:hover {
+  background: #f8f9fa;
+}
+#results {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 1;
+}
+/* .product {
+  width: 200px;
+  margin: 10px;
+  padding: 15px;
+  text-align: center;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+} */
+/* .product img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+} */
+.product h3 {
+  font-size: 16px;
+  margin: 10px 0;
+}
+.product p {
+  font-size: 14px;
+  color: #666;
+}
+
+
+
+
+/* for 3 line icon */
+.background-icons {
+  position: absolute;
+  z-index: 800; /* Ensure background icons are below the search bar but above the default content */
+}
+
+ 
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+    /* Show the element only in this range */
+  }
+
+  .nav-links {
+    display: none;
+  }
+ 
+  .slider-title {
+    font-size: 1rem;
+    border-radius: 5px;
+
+  }
+
+  .prev {
+    display: none;
+  }
+
+  .next {
+    display: none;
+  }
+
+  .header{
+    padding-left: .1rem;
+    padding-right: .1rem;
+  }
+  .slider2 .slide2 {
+    margin-right: 0.5rem;
+    margin-left: 0.2rem;
+  }
+  p {
+  font-size: 1rem;
+
+  }
+   ul {
+    font-size: 1rem;
+   }
+   .search-container {
+    width: 180px;
+    left: -45px;
+  }
+  .carousel-item {
+    min-width: 200px;
+    height: 150px;}
+}
+
+
+@media (min-width: 768px) {
+  .menu-icon {
+    display: none;
+    /* Show the element only in this range */
+  }
+
+  .nav-links {
+    display: block;
+  }
+}
+
+ 

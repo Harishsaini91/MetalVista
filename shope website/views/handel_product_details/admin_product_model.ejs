@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Field Model Editor</title>
+  <link rel="stylesheet" href="/css/admin_product_model.css">
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    .field-group { border: 1px solid #ddd; margin-bottom: 1rem; padding: 1rem; border-radius: 5px; }
+    .field-header { display: flex; justify-content: space-between; align-items: center; }
+    .option { margin: 5px 0; display: flex; align-items: center; gap: 10px; }
+    .add-box { margin-top: 10px; }
+    button { cursor: pointer; }
+    .delete-actions { margin-top: 10px; font-size: 0.9rem; color: #444; }
+    hr { margin: 2rem 0; }
+  </style>
+</head>
+<body>
+  <h2>🛠️ Product Field Model Editor</h2>
+
+  <!-- Add New Field -->
+  <form action="/products/model-editor/add-field" method="POST" style="margin-bottom: 2rem;">
+    <input type="text" name="name" placeholder="Field name" required>
+    <select name="type">
+      <option value="text">Text</option>
+      <option value="number">Number</option>
+      <option value="dropdown">Dropdown</option>
+    </select>
+    <input type="text" name="unit" placeholder="Unit (optional)">
+    <input type="text" name="description" placeholder="Description (optional)">
+    <button type="submit">➕ Add Field</button>
+  </form>
+
+  <!-- Save Field Values -->
+  <form action="/products/model-editor/save" method="POST">
+    <% model?.fields?.forEach(field => { %>
+      <div class="field-group">
+        <div class="field-header">
+          <strong><%= field.name %></strong>
+        </div>
+
+        <div class="options" id="<%= field.name %>_options">
+          <% field.values.forEach(value => { %>
+            <div class="option">
+              <input type="checkbox" name="<%= field.name %>" value="<%= value %>" checked>
+              <span><%= value %></span>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="add-box">
+          <input type="text" id="add_<%= field.name %>" placeholder="Add value to <%= field.name %>">
+          <button type="button" onclick="addOption('<%= field.name %>')">Add</button>
+        </div>
+      </div>
+    <% }) %>
+    <button type="submit">💾 Save Product</button>
+  </form>
+
+  <!-- Delete Forms (separate and safe) -->
+  <% model?.fields?.forEach(field => { %>
+    <div class="delete-actions">
+      <form action="/products/model/delete-field" method="POST" style="display:inline;">
+        <input type="hidden" name="fieldName" value="<%= field.name %>">
+        <button type="submit">❌ Delete Field "<%= field.name %>"</button>
+      </form>
+      <% field.values.forEach(value => { %>
+        <form action="/products/model/delete-value" method="POST" style="display:inline;">
+          <input type="hidden" name="fieldName" value="<%= field.name %>">
+          <input type="hidden" name="value" value="<%= value %>">
+          <button type="submit">✖ Remove "<%= value %>"</button>
+        </form>
+      <% }) %>
+    </div>
+  <% }) %>
+
+  <script>
+    function addOption(fieldName) {
+      const input = document.getElementById('add_' + fieldName);
+      const value = input.value.trim();
+      if (!value) return;
+
+      const container = document.getElementById(fieldName + '_options');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'option';
+      wrapper.innerHTML = `
+        <input type="checkbox" name="${fieldName}" value="${value}" checked>
+        <span>${value}</span>
+      `;
+      container.prepend(wrapper);
+      input.value = '';
+    }
+  </script>
+</body>
+</html>

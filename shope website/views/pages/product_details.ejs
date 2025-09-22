@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website</title>
+  <link rel="stylesheet" href="../css/product_details.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <!-- Slider Section -->
+    <div class="slider">
+<div class="slide" style="background-image: url('/images/default.jpg');">
+
+          <nav class="navbar">
+            <div class="logo">Logo</div>
+
+                  <div id="overlay"></div>
+
+          <div class="search-container">
+            <input type="text" id="searchBar" placeholder="Search products..." />
+            <div id="suggestions"></div>
+          </div>
+
+          <div id="results"></div>
+
+          
+               <ul class="nav-links  " >
+              <% if (userRole === 'admin') { %>
+  <li><a href="/admin/chat">Admin Chat</a></li>
+<% } %>
+<% if (userRole === 'user') { %>
+<li><a href="/user/chat">Chat Support</a></li>
+<% } %>
+              <li><a href="/home">Home</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/product?category=indoor">Products</a></li>
+                                <% if (userRole === 'user') { %>
+<li> <a href="/payments/create">Create Payment</a></li>
+<li> <a href="/payments/history">View Payment History</a>
+<% } %>
+ <% if (!userRole) { %>
+                <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+                <% }else{  %> 
+                  <li><a href="/logout">Logout</a></li>
+                  
+                  <% }  %> 
+            <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
+
+            <!-- Menu -->
+            <div class="menu background-icons" id="menu">
+              <ul>
+                <% if (userRole === 'user') { %>
+<li><a href="/user/chat">Chat Support</a></li>
+<% } %>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/product?category=indoor">Product</a></li>
+
+                         <% if (userRole === 'user') { %>
+<li> <a href="/payments/create">Create Payment</a></li>
+<li> <a href="/payments/history">View Payment History</a>
+<% } %>
+            </li>
+ <% if (!userRole) { %>
+                <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+                <% }else{  %> 
+                  <li><a href="/logout">Logout</a></li>
+                  
+                  <% }  %> 
+            </div>
+            
+          </nav>
+
+          <h4 class="slider-title">
+            <span class="welcome-text">Welcome to My Workshop</span><br>
+            Jai Jeen Mata Welding Workshop<br>
+            Contact No. 8930081481
+          </h4> 
+
+          <a href=https://maps.app.goo.gl/U28yWXRhCx8EbUCf8 class="btn" target="_blank"><img src="./images/logo/location.svg" alt=""></a>
+        </div>
+      <button class="prev" onclick="prevSlide()">&#10094;</button>
+      <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+  </header>
+  <!-- text info -->
+
+ 
+ 
+
+  <!-- Normal product details -->
+<div class="detail-container">
+ <h2>📦 Product Details</h2>
+
+<p><b>Image:</b> <%= imageName %></p>
+<p><b>product name:</b> <%= product_name %></p>
+<p><b>Sub names:</b> <%= (subnames && subnames.length) ? subnames.join(", ") : "—" %></p>
+
+
+
+<% if (ProductModelData_info && ProductModelData_info.selectedFields) { %>
+  <% Object.keys(ProductModelData_info.selectedFields).forEach(field => { %>
+    <% const values = ProductModelData_info.selectedFields[field]; %>
+    <% if (values && values.length > 0) { %>
+      <div class="field-box">
+        <b><%= field %>:</b> <%= values.join(", ") %>
+      </div>
+    <% } %>
+  <% }) %>
+<% } else { %>
+  <p>No product details found.</p>
+<% } %>
+
+      <form action="/payments/create" method="POST">
+  <input type="number" name="amount" placeholder="Amount (INR)" min="1" required />
+  <input type="text" name="orderName" placeholder="Order name" required />
+  <input type="hidden" name="paymentType" value="Order" />
+  <button type="submit">Pay with Razorpay</button>
+</form>
+
+
+  <a href="#" class="detail-btn">Get Latest Price</a>
+</div>
+
+<!-- ✅ Show admin button only if role is admin -->
+<% if (userRole === 'admin') { %>
+  <!-- <button class="admin-btn"
+          onclick="window.location.href='/adminProduct_details_editer/<%= imageName %>'">
+    ✏️ Edit Product Details
+  </button> -->
+    <!-- <button onclick="openProductUpload()">➕ Add Product with Details</button> -->
+<% } %>
+
+
+  <!-- ✅ Admin button (only show if user is admin) -->
+  <button id="adminEditBtn" class="admin-btn" style="display:none;">✏️ Edit Product Details</button>
+
+
+  <!-- 4 section -->
+
+ <!-- Normal View (Existing Layout) -->
+ <section>
+  <div class="slider2">
+      <div class="slide2" style="background-image: url('./images/uploded_image/<%= imageName %>');"></div>
+      <span class="full-view-icon" onclick="openFullScreen()">[ ]</span>
+  </div>
+</section>
+
+
+
+
+
+ 
+
+
+<!-- Carousel (Normal) -->
+<section class="carousel-section">
+  <div class="carousel">
+    <div class="carousel-track">
+      <!-- Main product image (not deletable) -->
+      <a class="carousel-item"
+         style="background-image: url('./images/uploded_image/<%= imageName %>');"
+         onclick="slide2change('<%= imageName %>')"
+          onmouseenter="select_deleteing_img('Main Product Image (cannot delete) ')"
+         title="Main Product Image (cannot delete)">
+      </a>
+
+      <!-- Extra images (deletable) -->
+      <% if (extra_image && extra_image[0]?.extra_image_name?.length > 0) { %>
+        <% extra_image[0].extra_image_name.forEach((img) => { %>
+          <a class="carousel-item"
+             style="background-image: url('./images/uploded_image/<%= img %>');"
+             onclick="slide2change('<%= img %>')"
+             onmouseenter="select_deleteing_img('<%= img %>')"
+             title="Extra Image - Hover to select for delete">
+          </a>
+        <% }); %>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Admin upload/delete controls -->
+  <% if (userRole == 'admin') { %>
+    <!-- Upload Form -->
+    <form action="/product_details" method="post" enctype="multipart/form-data" class="admin_image">
+      <div class="input-group" id="file_here">
+        <input type="file" id="image" name="images" multiple required>
+        <input type="hidden" name="extra_image" value="<%= imageName %>">
+        <button type="submit">Upload</button>
+      </div>
+    </form>
+
+    <!-- Delete Form (Only for extra images) -->
+    <div class="delete-section">
+      <form action='/extra_product_delete_image' method="post">
+        <input type="text" id="currentImageName" value="" name="imageName" readonly>
+        <input type="hidden" name="product_name" value="<%= imageName %>">
+        <button type="submit" class="image_up">Delete Selected Extra Image</button>
+      </form>
+    </div>
+  <% } %>
+</section>
+
+
+
+<!-- Fullscreen Modal -->
+<div id="fullscreenModal" class="fullscreen-modal">
+    <div class="fullscreen-container">
+        <!-- Sidebar -->
+        <div class="media-sidebar">
+            <a class="carousel-item"
+               style="background-image: url('./images/uploded_image/<%= imageName %>');"
+               onclick="changeFullscreenMedia('<%= imageName %>')"></a>
+
+            <% if (extra_image && extra_image[0]?.extra_image_name?.length > 0) { %>
+                <% extra_image[0].extra_image_name.forEach((img) => { %>
+                    <a class="carousel-item"
+                       style="background-image: url('./images/uploded_image/<%= img %>');"
+                       onclick="changeFullscreenMedia('<%= img %>')"></a>
+                <% }); %>
+            <% } %>
+        </div>
+
+        <!-- Main Display -->
+        <div class="media-display">
+            <span class="close-modal" onclick="closeFullScreen()">✕</span>
+            <img id="fullscreenImage" src="./images/uploded_image/<%= imageName %>" alt="">
+            <video id="fullscreenVideo" controls style="display: none;"></video>
+        </div>
+    </div>
+</div>
+
+
+
+  <!-- 3d object -->
+
+  <section class="section_3d">
+
+    <div id="viewer-container">
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Product Range Section -->
+
+  <section class="product-range">
+    <h2>Product Range</h2>
+    <div class="products">
+      <a href="/product?category=indoor" class="product">
+        <img src='./images/product_range_image/indoor.jfif' alt="Indoor Items">
+        <span>Indoor Items</span>
+      </a>
+      <a href="/product?category=outdoor" class="product">
+        <img src='./images/product_range_image/outdoor.jfif' alt="Outdoor Items">
+        <span>Outdoor Items</span>
+      </a>
+      <a href="/product?category=counter" class="product">
+        <img src='./images/product_range_image/counter.jfif' alt="Counter">
+        <span>Counter</span>
+      </a>
+      <a href="/product?category=art" class="product">
+        <img src='./images/product_range_image/art.jfif' alt="3D Art">
+        <span>3D Art</span>
+      </a>
+      <a href="/product?category=other" class="product">
+        <img src='./images/product_range_image/other.jfif' alt="Other">
+        <span>Other</span>
+      </a>
+    </div>
+  </section>
+  
+  <!--       ////////// -->
+  <script src="script.js"></script>
+
+
+  <script>
+
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+  }
+}
+
+
+
+    
+let currentSlide = 0;
+const slides = <%- JSON.stringify(slides) %>; // Server-side data
+
+if (slides && slides.length > 0) {
+  const slideElement = document.querySelector(".slide");
+  slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[currentSlide].name}')`;
+}
+
+function showSlide(index) {
+  const slideElement = document.querySelector(".slide");
+  if (slideElement && slides.length > 0) {
+    slideElement.style.backgroundImage = `url('./images/uploded_image/${slides[index].name}')`;
+    slideElement.classList.add("active");
+  } else {
+    console.error("Slide element not found or slides array is empty!");
+  }
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % slides.length; // Cycle to next
+  showSlide(currentSlide);
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + slides.length) % slides.length; // Cycle back
+  showSlide(currentSlide);
+}
+
+// Automatically initialize first slide
+if (slides && slides.length > 0) {
+  showSlide(currentSlide);
+}
+
+// Add event listeners for hover
+const sliderElement = document.querySelector(".slider");
+
+if (sliderElement) {
+  let slideshowInterval = setInterval(nextSlide, 8000); // Automatically change slides every 4 seconds
+
+  // Pause slideshow on hover
+  sliderElement.addEventListener("mouseenter", () => {
+    clearInterval(slideshowInterval); // Stop auto-slide
+  });
+
+  // Resume slideshow on hover out
+  sliderElement.addEventListener("mouseleave", () => {
+    slideshowInterval = setInterval(nextSlide, 8000); // Restart auto-slide
+  });
+}
+
+
+ 
+function toggleMenu() {
+  const menu = document.getElementById("menu");
+  menu.classList.toggle("show");  // Show or hide the menu when the icon is clicked
+}
+
+// Hide the menu when mouse moves outside
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById("menu");
+  const menuIcon = document.querySelector(".menu-icon");
+  
+  // Close the menu if the click is outside the menu or icon
+  if (!menu.contains(event.target) && event.target !== menuIcon) {
+    menu.classList.remove("show");
+  }
+});
+
+
+
+ 
+
+  // 
+  function openFullScreen() {
+            document.getElementById("fullscreenModal").classList.add("active");
+        }
+
+        function closeFullScreen() {
+            document.getElementById("fullscreenModal").classList.remove("active");
+            document.getElementById("fullscreenVideo").pause();
+        }
+
+        function changeFullscreenMedia(image_name) {
+            const fullscreenImage = document.getElementById("fullscreenImage");
+            const fullscreenVideo = document.getElementById("fullscreenVideo");
+
+            if (image_name.endsWith(".mp4") || image_name.endsWith(".webm") || image_name.endsWith(".ogg")) {
+                fullscreenVideo.src = `./images/uploded_image/${image_name}`;
+                fullscreenVideo.style.display = "block";
+                fullscreenImage.style.display = "none";
+            } else {
+                fullscreenImage.src = `./images/uploded_image/${image_name}`;
+                fullscreenImage.style.display = "block";
+                fullscreenVideo.style.display = "none";
+            }
+        }
+
+        function slide2change(image_name) {
+            const sliderImage = document.querySelector('.slide2');
+            sliderImage.style.backgroundImage = `url('./images/uploded_image/${image_name}')`;
+        }
+
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        const sliderImage = document.querySelector('.slide2');
+
+        carouselItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const style = window.getComputedStyle(item);
+                const backgroundImage = style.backgroundImage;
+                sliderImage.style.backgroundImage = backgroundImage;
+            });
+        });
+
+
+
+
+        // SELECT deleting img
+   
+        function select_deleteing_img(imageName) {
+    const selected_image = document.getElementById("currentImageName");
+    if (selected_image) {
+      selected_image.value = imageName; // Set the hovered image name
+    }
+  }
+
+// handel product details
+async function loadProduct(productId) {
+  const res = await fetch(`/api/products/${productId}`);
+  const product = await res.json();
+
+  document.getElementById("product-title").innerText = product.name;
+  document.getElementById("product-price").innerHTML =
+    `₹ ${product.price} <a href="#">Get Latest Price</a>`;
+  document.getElementById("product-description").innerText = product.description;
+
+  const table = document.getElementById("product-table");
+  table.innerHTML = "";
+  product.attributes.forEach(attr => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${attr.field.name}</td><td>${attr.value}</td>`;
+    table.appendChild(row);
+  });
+}
+
+// Example call
+loadProduct("68a96938e64fdbb6ecefaaa2"); // <-- productId from DB
+
+
+// 
+ 
+
+
+  
+  </script>
+
+  <script src="/js/viewer.js"></script>
+  <script src="/js/search.js"></script>
+  <!-- <script src="/js/slider.js"></script> -->
+
+</body>
+
+</html>
+
