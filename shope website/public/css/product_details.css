@@ -2,7 +2,9 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #DFDCE3
+    background-color: #DFDCE3;
+    padding: 0;
+
   }
   h2 {
     text-align: center;
@@ -22,7 +24,33 @@ body {
 
 
 
+/*  */
+/* Zoom buttons inside viewer */
+#viewer-container .zoom-btns {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000; /* above 3D viewer content */
+}
 
+#viewer-container .zoom-btns button {
+  padding: 10px 15px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.3s;
+}
+
+#viewer-container .zoom-btns button:hover {
+  background: #555;
+}
+/*  */
 
 
 
@@ -31,7 +59,7 @@ body {
 }
 
 .navbar {
-  display: flex;
+  position: relative;
   justify-content: space-between;
   align-items: center;
   background-color: #5f584a3b;
@@ -39,6 +67,7 @@ body {
   margin: 17px auto;
   /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
   border-radius: 10px;
+   z-index: 5000; 
 }
 
 .navbar .logo {
@@ -48,6 +77,28 @@ body {
   /* Neutral color */
   text-transform: uppercase;
 }
+
+
+/* Logo container */
+.logo {
+  width: 70px;       /* Adjust width as needed */
+  height: auto;       /* Height adjusts automatically */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;   /* Prevent overflow if image is bigger */
+  border-radius: 50px;
+}
+
+/* Logo image */
+.logo img {
+  max-width: 100%;    /* Scale down to fit container */
+  height: auto;       /* Maintain aspect ratio */
+  display: block;     /* Remove inline spacing */
+  background-color:rgb(222, 11, 11) ;
+
+}
+
 
 .nav-links {
   list-style: none;
@@ -94,6 +145,7 @@ body {
   background-position: center;
   opacity: 0;
   transition: opacity 0.8s ease-in-out;
+    z-index: 100;
   /* Smooth fade effect */
 }
 
@@ -391,37 +443,26 @@ canvas {
   margin-right: 10px;
 }
 .menu-icon {
-   position: absolute; 
+  position: fixed;        /* ✅ keep it anchored inside navbar/slider */
+  top: clamp(10px, 2%, 25px); 
+  right: clamp(10px, 2%, 30px);
   font-size: 2rem;
-  cursor: pointer;
-  padding: 10px;
-  margin: 3px;
   color: white;
-  border-radius: 5px;
-  top: 20px;
-  right: 20px;
-  z-index: 2000;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999999 !important;  /* ✅ force it above everything */
+  transition: background 0.3s ease, transform 0.2s ease;
 }
-
-.menu-icon.background-icons {
-  z-index: 2000 !important;
-}
-
 
 .menu-icon:hover {
-  color: #ff0057;
-}
-/* Menu styles */
-.menu {
-  position: absolute;
-  top: 73px;
-  right: 0px;
-  background-color: #ffffffe0;
-  width: 166px;
-  /* display: none;  Hide by default */
-  z-index: 1999;
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
 }
 
+/* Menu styles */
+ 
 .menu.show {
   display: block;  /* Show when the 'show' class is added */
 }
@@ -432,9 +473,7 @@ canvas {
   padding: 0;
 }
 
-/* .menu ul li {
-  border-bottom: 1px solid #ddd;
-} */
+ 
 
 .menu ul li a {
   display: block;
@@ -740,13 +779,11 @@ align-items: center;
   position: relative; /* Make sure it stacks correctly */
   z-index: 500;
 }
-.slider, .slide, .menu {
+.slider, .slide {
   z-index: 2100; 
 }
-.menu-icon, .full-view-icon {
-  z-index: 10; /* Reduce from 1000 or 9999 */
-}
-
+ 
+ 
 
 
 /* products detail section */
@@ -805,7 +842,7 @@ margin-bottom: 100px;
 
  
 
-@media (max-width: 768px) {
+@media (max-width: 1235px) {
   .menu-icon {
     display: block;
     /* Show the element only in this range */
@@ -854,7 +891,7 @@ margin-bottom: 100px;
 }
 
 
-@media (min-width: 768px) {
+@media (min-width: 1236px) {
   .menu-icon {
     display: none;
     /* Show the element only in this range */
@@ -866,3 +903,33 @@ margin-bottom: 100px;
 }
 
  
+.navbar {
+  position: relative;
+  z-index: 5000;
+}
+
+.slider, .slide {
+  z-index: 2100;
+}
+
+.menu {
+  position: absolute;
+  top: 73px;
+  right: 0px;
+  background-color: #ffffffe0;
+  width: 166px;
+  z-index: 4999;
+}
+
+.menu-icon {
+  position: fixed;
+  top: clamp(10px, 2%, 25px);
+  right: clamp(10px, 2%, 30px);
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999999 !important;
+}

@@ -2,31 +2,53 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Chat</title>
-    <link rel="stylesheet" href="/css/chat.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Chat Dashboard</title>
+  <link rel="stylesheet" href="/css/admin_chat.css" />
 </head>
 
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h2>Admin Chat Dashboard</h2>
-        </div>
+  <div class="chat-container">
+    <header class="chat-header">
+      <div class="header-left">
+        <img src="/images/logo/chat_icon.svg" alt="Chat" class="chat-logo" />
+        <h2>Admin Chat Dashboard</h2>
+      </div>
+      <div class="header-right">
+        <button onclick="window.location.href='/logout'" class="logout-btn">Logout</button>
+      </div>
+    </header>
 
-        <h3>Active Chat Rooms</h3>
-        <ul class="admin-rooms-list">
-            <% rooms.forEach(room=> { %>
-                <li onclick="window.location.href='/admin/chat/<%= room._id %>'">
-                    <%= room.userId ? room.userId.gmail : 'Unknown User' %> - <%= room.updatedAt.toLocaleString() %>
-                            <% if (room.status==='active' ) { %>
-                                <span style="color: green;">(Active)</span>
-                                <% } %>
-                </li>
-                <% }); %>
-
+    <main class="chat-main">
+      <h3 class="section-title">💬 Active Chat Rooms</h3>
+      <% if (rooms && rooms.length > 0) { %>
+        <ul class="rooms-list">
+          <% rooms.forEach(room => { %>
+            <li class="room-item" onclick="window.location.href='/admin/chat/<%= room._id %>'">
+              <div class="room-info">
+                <span class="user-name">
+                  👤 <%= room.userId ? room.userId.gmail : 'Unknown User' %>
+                </span>
+                <span class="last-update">
+                  🕒 <%= room.updatedAt.toLocaleString() %>
+                </span>
+              </div>
+              <div class="room-status">
+                <% if (room.status === 'active') { %>
+                  <span class="status active">● Active</span>
+                <% } else { %>
+                  <span class="status inactive">● Inactive</span>
+                <% } %>
+              </div>
+            </li>
+          <% }) %>
         </ul>
-    </div>
+      <% } else { %>
+        <p class="no-rooms">No active chat rooms at the moment.</p>
+      <% } %>
+    </main>
+  </div>
 </body>
 
 </html>

@@ -36,6 +36,47 @@ const home_page = async (req, res) => {
   res.render('pages/home_page', { slides, slides2, userRole,model })
 }
 
+// const product_details_page = async (req, res) => {
+//   try {
+//     const imageName = req.query.image;
+
+//     // Fetch top slides
+//     const slides = await top_slide_image_model.find();
+
+//     // Fetch extra images
+//     const extra_image = await product_extra_image_model.find({ product_name: imageName });
+
+//   // ✅ Fetch product details from slide2_model
+//     const product = await ProductModelData.findOne({  imageName });
+
+//     // ✅ Fetch single product by imageName
+//     const ProductModelData_info = await ProductModelData.findOne({ imageName: imageName });
+
+//     const userRole = req.session.userRole || null; 
+
+//     // ✅ Check and log one field for debugging
+//     if (ProductModelData_info && ProductModelData_info.selectedFields) {
+//       console.log("Category:", ProductModelData_info.selectedFields.category[0]);
+//     } else {
+//       console.log("⚠️ No product details found for imageName:", imageName);
+//     }
+
+//     // Render page with data
+//     res.render('pages/product_details', {
+//       imageName,
+//       extra_image,
+//       slides, 
+//       userRole,
+//       ProductModelData_info,
+//        product_name: product ? product.product_name : null,
+//   subnames: (product && Array.isArray(product.subnames)) ? product.subnames : []
+//     });
+//   } catch (error) {
+//     console.error("❌ Error in product_details_page:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// };
+
 const product_details_page = async (req, res) => {
   try {
     const imageName = req.query.image;
@@ -43,34 +84,37 @@ const product_details_page = async (req, res) => {
     // Fetch top slides
     const slides = await top_slide_image_model.find();
 
-    // Fetch extra images
+    // Fetch extra images for the product
     const extra_image = await product_extra_image_model.find({ product_name: imageName });
 
-  // ✅ Fetch product details from slide2_model
-    const product = await ProductModelData.findOne({  imageName });
-
-    // ✅ Fetch single product by imageName
-    const ProductModelData_info = await ProductModelData.findOne({ imageName: imageName });
+    // Fetch product details from ProductModelData
+    const product = await ProductModelData.findOne({ imageName });
 
     const userRole = req.session.userRole || null; 
 
-    // ✅ Check and log one field for debugging
-    if (ProductModelData_info && ProductModelData_info.selectedFields) {
-      console.log("Category:", ProductModelData_info.selectedFields.category[0]);
+    // ✅ Safely log category for debugging
+    if ( 
+      product &&
+      product.selectedFields &&
+      Array.isArray(product.selectedFields.category) &&
+      product.selectedFields.category.length > 0
+    ) {
+      console.log("Category:", product.selectedFields.category[0]);
     } else {
-      console.log("⚠️ No product details found for imageName:", imageName);
+      console.log("⚠️ No category found for imageName:", imageName);
     }
 
-    // Render page with data
+    // Render the page with all required data
     res.render('pages/product_details', {
       imageName,
       extra_image,
       slides, 
       userRole,
-      ProductModelData_info,
-       product_name: product ? product.product_name : null,
-  subnames: (product && Array.isArray(product.subnames)) ? product.subnames : []
+      ProductModelData_info: product,
+      product_name: product ? product.product_name : null,
+      subnames: (product && Array.isArray(product.subnames)) ? product.subnames : []
     });
+
   } catch (error) {
     console.error("❌ Error in product_details_page:", error);
     res.status(500).send("Internal Server Error");
@@ -79,7 +123,9 @@ const product_details_page = async (req, res) => {
 
 
 const about_page = async (req, res) => {
-  res.render('pages/aboutus') 
+  const userRole = req.session.userRole || null; 
+
+  res.render('pages/aboutus',{userRole}) 
 }
 
 const product_page = async (req, res) => {
@@ -150,6 +196,9 @@ const sign_in_page_post = async (req, res) => {
       req.session.userId = user._id;
       req.session.userRole = user.role;
       req.session.gmail = user.gmail;
+console.log(req.session.userRole);
+
+
       req.session.save(err => {
         if (err) {
           console.error("Session save error:", err);

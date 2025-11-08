@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Website</title>
   <link rel="stylesheet" href="../css/product_page.css">
+  <link rel="stylesheet" href="/css/scroll-helper.css">
+
 </head>
 <body>
   <!-- Header Section -->
@@ -15,7 +17,8 @@
         <div class="slide" style="background-image: url('./images/uploded_image/<%= slides[0].name %>');">
 
           <nav class="navbar">
-            <div class="logo">Logo</div>
+                 <div class="logo" ><img src="./images/logo/shope_logo.svg" alt="Logo"></div>
+
 
             <div id="overlay"></div>
 
@@ -40,7 +43,11 @@
               <li><a href="/home">Home</a></li>
               <li><a href="/about">About Us</a></li>
               <li><a href="/product?category=indoor">Products</a></li>
-              <li><a href="sign_in" onclick="openLoginWindow()">Sign in</a></li>
+               <% if (!userRole) { %>
+              <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+            <% } else { %>
+              <li><a href="/logout">Logout</a></li>
+            <% } %>
             </ul>
             <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
 
@@ -58,7 +65,11 @@
                 <li><a href="/home">Home</a></li>
                 <li><a href="/about">About</a></li>
                 <li><a href="/product?category=indoor">Product</a></li>
-                <li><a href="/sign_in">Sign In</a></li>
+           <% if (!userRole) { %>
+              <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
+            <% } else { %>
+              <li><a href="/logout">Logout</a></li>
+            <% } %>
               </ul>
             </div>
             
@@ -78,6 +89,17 @@
     </div>
   </header>
 
+<!--  -->
+  <!-- Scroll Helper -->
+<div id="scroll-wrapper">
+  <div id="scroll-helper">
+    <div id="scroll-main-btn" title="Scroll Options">⇅</div>
+    <div id="scroll-options">
+      <button id="scroll-top">⬆</button>
+      <button id="scroll-bottom">⬇</button>
+    </div>
+  </div>
+</div>
 
   
  <!-- Product Range Section -->
@@ -131,6 +153,13 @@
         <!-- Images will be dynamically inserted here -->
       </div>
     </div>
+
+
+    <div class="scroll-progress" id="scrollBar">
+      <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+  </div>
+
   </section>
   
  <!-- galiry images -->
@@ -236,76 +265,103 @@ document.addEventListener('click', function(event) {
 
     //  ...........carousel-section
     const product = <%- JSON.stringify(product) %>;
-function updateCarousel(category) {
-  const carouselSection = document.querySelector('.carousel-section');
-  carouselSection.innerHTML = ''; // Clear existing carousels
 
-  if (product[0] && Array.isArray(product[0][category]) && product[0][category].length > 0) {
-    const images = product[0][category];
-    let rows = Math.ceil(images.length / 25); // Number of rows required
+ const userRole = "<%= userRole %>"; // From backend session
 
-    for (let i = 0; i < rows; i++) {
-      const carouselRow = document.createElement('div');
-      carouselRow.className = 'carousel-row';
+  function updateCarousel(category) {
+    const carouselSection = document.querySelector('.carousel-section');
+    carouselSection.innerHTML = ''; // Clear existing carousels
 
-      const start = i * 25;
-      const end = start + 25;
-      const rowImages = images.slice(start, end);
+    if (product[0] && Array.isArray(product[0][category]) && product[0][category].length > 0) {
+      const images = product[0][category];
+      let rows = Math.ceil(images.length / 25); // Number of rows required
 
-      rowImages.forEach((image) => {
-        // Main carousel item
-        const carouselItem = document.createElement('a');
-        carouselItem.className = 'carousel-item image_size';
-        carouselItem.style.backgroundImage = `url('./images/uploded_image/${image}')`;
-        carouselItem.href = `/product_details?image=${image}`;
-        carouselItem.style.position = 'relative';
+      for (let i = 0; i < rows; i++) {
+        const carouselRow = document.createElement('div');
+        carouselRow.className = 'carousel-row';
 
-        // Hover data update
-        carouselItem.addEventListener('mouseover', () => {
-          const categories = document.getElementById('categories');
-          const currentImage_name = document.getElementById('currentImage_name');
-          categories.value = `${category}`;
-          currentImage_name.value = `${image}`;
+        const start = i * 25;
+        const end = start + 25;
+        const rowImages = images.slice(start, end);
+
+        rowImages.forEach((image) => {
+          // Create main carousel item (image block)
+          const carouselItem = document.createElement('a');
+          carouselItem.className = 'carousel-item image_size';
+          carouselItem.href = `/product_details?image=${image}`;
+          carouselItem.style.backgroundImage = `url('./images/uploded_image/${image}')`;
+          carouselItem.style.backgroundSize = 'cover';
+          carouselItem.style.backgroundPosition = 'center';
+          carouselItem.style.position = 'relative';
+          carouselItem.style.display = 'block'; // ensures background shows
+          carouselItem.style.textDecoration = 'none';
+
+          // Hover logic to update category/image info
+          carouselItem.addEventListener('mouseover', () => {
+            const categories = document.getElementById('categories');
+            const currentImage_name = document.getElementById('currentImage_name');
+            if (categories && currentImage_name) {
+              categories.value = `${category}`;
+              currentImage_name.value = `${image}`;
+            }
+          });
+
+          // ✅ Create edit icon
+          const editIcon = document.createElement('span');
+          editIcon.className = 'edit-icon';
+          editIcon.innerHTML = '✏️';
+          editIcon.title = 'Edit Details';
+
+          // Icon styling
+          Object.assign(editIcon.style, {
+            position: 'absolute',
+            top: '5px',
+            right: '5px',
+            background: 'rgba(255, 255, 255, 0.8)',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            color: '#000',
+            fontSize: '14px',
+            cursor: 'pointer',
+            zIndex: '10'
+          });
+
+          // ✅ Role-based visibility
+          if (userRole === 'admin') {
+            editIcon.style.display = 'inline';
+          } else {
+            editIcon.style.display = 'none';
+          }
+
+          // Popup edit window
+          editIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.open(
+              `http://localhost:8000/products/full-entry?imageName=${image}`,
+              '_blank',
+              'width=600,height=500,top=100,left=100,resizable=yes,scrollbars=yes'
+            );
+          });
+
+          // Append icon (only if admin)
+          if (userRole === 'admin') {
+            carouselItem.appendChild(editIcon);
+          }
+
+          // ✅ Append item to row
+          carouselRow.appendChild(carouselItem);
         });
 
-        // Create edit icon with popup behavior
-        const editIcon = document.createElement('span');
-        editIcon.className = 'edit-icon';
-        editIcon.innerHTML = '✏️'; // Optional: Replace with SVG or font icon
-        editIcon.style.position = 'absolute';
-        editIcon.style.top = '5px';
-        editIcon.style.right = '5px';
-        editIcon.style.background = 'rgba(255, 255, 255, 0.8)';
-        editIcon.style.padding = '2px 6px';
-        editIcon.style.borderRadius = '4px';
-        editIcon.style.textDecoration = 'none';
-        editIcon.style.color = '#000';
-        editIcon.style.fontSize = '14px';
-        editIcon.style.cursor = 'pointer';
-        editIcon.title = 'Edit Details';
-
-        // Open small window for editing
-        editIcon.addEventListener('click', (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          window.open(
-            `http://localhost:8000/products/full-entry?imageName=${image}`,
-            '_blank',
-            'width=600,height=500,top=100,left=100,resizable=yes,scrollbars=yes'
-          );
-        });
-
-        carouselItem.appendChild(editIcon); // Add icon inside the image block
-        carouselRow.appendChild(carouselItem); // Add to the row
-      });
-
-      carouselSection.appendChild(carouselRow); // Add row to section
+        // Append row to section
+        carouselSection.appendChild(carouselRow);
+      }
+    } else {
+      console.error(`No images found for category: ${category}`);
+      carouselSection.innerHTML = `<p>No images available for "${category}".</p>`;
     }
-  } else {
-    console.error(`No images found for category: ${category}`);
-    carouselSection.innerHTML = `<p>No images available for "${category}".</p>`;
   }
-}
+
 
 // Default category on load
 let category = <%- JSON.stringify(category) %>;
@@ -349,8 +405,32 @@ function loadImages(category, imagesData) {
 loadImages(category, single);
 
 
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const carouselSection = document.querySelector(".carousel-section");
+
+  if (!carouselSection) return;
+
+  // When pointer inside the carousel section, convert vertical scroll to horizontal
+  carouselSection.addEventListener("wheel", (e) => {
+    const row = e.target.closest(".carousel-row"); // Find which row user is scrolling
+    if (row && e.deltaY !== 0) {
+      e.preventDefault(); // Prevent vertical page scroll
+      row.scrollLeft += e.deltaY; // Scroll sideways instead
+    }
+  }, { passive: false });
+});
+
+
+// scroll bar
+
+
+
   </script>
   <script src="/js/search.js"></script>
+  <script src="/js/scroll-helper.js"></script>
+ 
 
 </body>
 </html>

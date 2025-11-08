@@ -81,35 +81,38 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Manual Zoom Buttons
   const zoomControls = document.createElement('div');
-  zoomControls.innerHTML = `
-    <style>
-      .zoom-btns {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        z-index: 1000;
-      }
-      .zoom-btns button {
-        padding: 10px 15px;
-        background: #333;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 18px;
-      }
-      .zoom-btns button:hover {
-        background: #555;
-      }
-    </style>
-    <div class="zoom-btns">
-      <button id="zoom-in">＋</button>
-      <button id="zoom-out">－</button>
-    </div>
-  `;
+  // zoomControls.innerHTML = `
+  //   <style>
+  //     .zoom-btns {
+  //       position: fixed;
+  //       bottom: 20px;
+  //       right: 20px;
+  //       display: flex;
+  //       flex-direction: column;
+  //       gap: 10px;
+  //       z-index: 1000;
+  //     }
+  //     .zoom-btns button {
+  //       padding: 10px 15px;
+  //       background: #333;
+  //       color: white;
+  //       border: none;
+  //       border-radius: 5px;
+  //       cursor: pointer;
+  //       font-size: 18px;
+  //     }
+  //     .zoom-btns button:hover {
+  //       background: #555;
+  //     }
+  //   </style>
+  //   <div class="zoom-btns">
+  //     <button id="zoom-in">＋</button>
+  //     <button id="zoom-out">－</button>
+  //   </div>
+  // `;
+
+
+
   document.body.appendChild(zoomControls);
 
   document.getElementById('zoom-in').addEventListener('click', () => {

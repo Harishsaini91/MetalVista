@@ -1,0 +1,69 @@
+#scroll-wrapper {
+  position: fixed;
+  right: 20px;
+  bottom: 40px;
+  z-index: 9999;
+}
+
+/* Main circular scroll icon */
+#scroll-main-btn {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1c1c1c, #3b3b3b);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: translateX(100px);
+  pointer-events: none;
+}
+
+#scroll-main-btn.show {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+#scroll-main-btn.glow {
+  box-shadow: 0 0 15px 4px #00d5ff, 0 0 30px 8px rgba(0, 213, 255, 0.3);
+}
+
+/* Scroll options */
+#scroll-options {
+  position: absolute;
+  right: 60px;
+  bottom: 0;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#scroll-options.show {
+  display: flex;
+  opacity: 1;
+}
+
+#scroll-options button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+#scroll-options button:hover {
+  background: #00d5ff;
+  transform: scale(1.1);
+}

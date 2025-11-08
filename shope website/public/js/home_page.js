@@ -19,7 +19,7 @@ document.addEventListener('click', function(event) {
 
 
 // 
-
+ 
 
 
 
@@ -216,7 +216,7 @@ let currentSlide = 0;
 
   const searchProducts = (query) => {
     if (!query) return;
-
+ 
     const matchedProducts = products.filter(
       (product) =>
         product.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -227,15 +227,15 @@ let currentSlide = 0;
 
     resultsDiv.innerHTML = matchedProducts.length
       ? matchedProducts
-          .map(
+          .map(  
             (product) => `
         <div class="product">
           <img src="${product.imageUrl}" alt="${product.name}" />
           <h3>${product.name}</h3>
           <p>${product.category}</p>
         </div>
-      `
-          )
+      ` 
+          ) 
           .join("")
       : "<p>No products found</p>";
   };
@@ -253,3 +253,4 @@ let currentSlide = 0;
       currentImageNameInput.value = imageName; // Set the hovered image name
     }
   }
+   

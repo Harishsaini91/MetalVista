@@ -1,51 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Chat with GPT-4 via OpenRouter</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-    #response {
-      white-space: pre-wrap;
-      background: #f4f4f4;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>AI Assistant | OpenRouter Chat</title>
+  <link rel="stylesheet" href="/css/openrouter_chatgpt.css">
 </head>
+
 <body>
-  <h1>Ask GPT-4 (via OpenRouter)</h1>
+  <header>
+    🤖 AI Chat Assistant
+    <button id="hamburger">☰</button>
+  </header>
+
+  <div id="chatContainer">
+    <div id="sidebar" class="hidden">
+      <button id="newChat">+ New Chat</button>
+      <h3>Your Chats</h3>
+      <div id="chatList"></div>
+    </div>
+
+    <div id="chatBox"></div>
+  </div>
+
   <form id="chatForm">
-    <input type="text" id="prompt" placeholder="Enter your question" style="width: 100%; padding: 10px;" required>
-    <button type="submit" style="margin-top: 10px;">Send</button>
+    <input type="text" id="prompt" placeholder="Type your message..." autocomplete="off" required />
+    <button type="submit">Send</button>
   </form>
-  <div id="response"></div>
 
   <script>
+    const chatBox = document.getElementById("chatBox");
     const form = document.getElementById("chatForm");
-    const responseDiv = document.getElementById("response");
+    const input = document.getElementById("prompt");
+    const chatList = document.getElementById("chatList");
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.getElementById("hamburger");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const prompt = document.getElementById("prompt").value;
+    let currentConversationId = localStorage.getItem("currentConversationId") || null;
+    let lastUserPrompt = null;
+    let productResults = [];
+    let productPage = 0;
+    const PRODUCTS_PER_PAGE = 5;
+    let extractedKeywords = [];
 
-      responseDiv.textContent = "Waiting for GPT-4 response...";
+    // Append message
+    function appendMessage(role, text, html = false) {
+      const div = document.createElement("div");
+      div.classList.add("message", role);
+      if (html) div.innerHTML = text;
+      else div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-      const res = await fetch("/openrouter-chtgpt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt })
-      });
+    // Load chat history
+    async function loadConversations() {
+      try {
+        const res = await fetch("/openrouter-chat/history");
+        const data = await res.json();
+        chatList.innerHTML = "";
 
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach(c => {
+            const div = document.createElement("div");
+            div.classList.add("chat-item");
+            div.innerHTML = `
+              <span>${c.title || 'Untitled Chat'}</span>
+              <button class="delete-btn" title="Delete Chat">🗑</button>
+            `;
+            div.querySelector("span").onclick = () => loadChat(c.conversationId, div);
+            div.querySelector(".delete-btn").onclick = async (e) => {
+              e.stopPropagation();
+              if (!confirm("🗑 Delete this chat?")) return;
+              await fetch(`/openrouter-chat/history/${c.conversationId}`, { method: "DELETE" });
+              if (currentConversationId === c.conversationId) {
+                chatBox.innerHTML = "";
+                appendMessage("bot", "💬 Chat deleted. Start a new one!");
+                localStorage.removeItem("currentConversationId");
+                currentConversationId = null;
+              }
+              loadConversations();
+            };
+            chatList.appendChild(div);
+          });
+        } else {
+          chatList.innerHTML = "<p style='color:#aaa;font-size:14px;margin:10px;'>No previous chats</p>";
+        }
+      } catch (err) {
+        console.error("⚠️ Failed to load conversations:", err);
+      }
+    }
+
+    // Load selected chat
+    async function loadChat(conversationId, element) {
+      currentConversationId = conversationId;
+      localStorage.setItem("currentConversationId", conversationId);
+      chatBox.innerHTML = "";
+      const res = await fetch(`/openrouter-chat/history/${conversationId}`);
       const data = await res.json();
-      responseDiv.textContent = data.choices?.[0]?.message?.content || "No response from GPT-4.";
+      document.querySelectorAll('.chat-item').forEach(b => b.classList.remove('active'));
+      element.classList.add('active');
+      data.messages.forEach(m => appendMessage(m.role === "user" ? "user" : "bot", m.content));
+      sidebar.classList.add("hidden");
+    }
+
+    // Show products in chat
+    function showProductsPage() {
+      const start = productPage * PRODUCTS_PER_PAGE;
+      const end = start + PRODUCTS_PER_PAGE;
+      const items = productResults.slice(start, end);
+      if (items.length === 0) return;
+
+      let html = "<div class='product-container'>";
+      items.forEach(p => {
+        html += `
+          <div class='product-card'>
+            <img src="${p.imageUrl}" width="80" />
+            <h4>${p.product_name}</h4>
+            <a href="/product_details?image=${p.imageName}" target="_blank">View Product</a>
+          </div>
+        `;
+      });
+      html += "</div>";
+      if (end < productResults.length) {
+        html += `<button id="nextProducts">Next ${PRODUCTS_PER_PAGE}</button>`;
+      }
+
+      appendMessage("bot", html, true);
+
+      const nextBtn = document.getElementById("nextProducts");
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+          productPage++;
+          nextBtn.remove();
+          showProductsPage();
+        });
+      }
+    }
+
+    // Load product schema
+    async function loadProductSchema() {
+      const cached = localStorage.getItem("productSchema");
+      if (cached) return JSON.parse(cached);
+      try {
+        const res = await fetch("/products/api/get-schema");
+        const schema = await res.json();
+        localStorage.setItem("productSchema", JSON.stringify(schema));
+        return schema;
+      } catch (err) {
+        console.error("❌ Failed to fetch product schema:", err);
+        appendMessage("bot", "⚠️ Schema not available. Some queries may not work.");
+        return null;
+      }
+    }
+
+    // Submit chat
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const userPrompt = input.value.trim();
+      if (!userPrompt) return;
+      lastUserPrompt = userPrompt;
+
+      appendMessage("user", userPrompt);
+      input.value = "";
+      appendMessage("bot", "⏳ Thinking...");
+
+      try {
+        const schema = await loadProductSchema();
+        if (!schema) {
+          appendMessage("bot", "⚠️ Product schema missing.");
+          return;
+        }
+
+        // 🌟 Enhanced AI instruction
+        const boundedPrompt = `
+You are a professional, polite AI shopping assistant.
+
+Your goals:
+1️⃣ Understand user's intent (even if misspelled or incomplete).
+2️⃣ Use the PRODUCT_SCHEMA below to match or infer correct fields.
+3️⃣ Respond briefly and humanly — friendly tone, 1–2 lines.
+4️⃣ Then return a JSON block (in triple backticks) with valid search keys.
+
+\`\`\`json
+{
+  "intent": "search_product",
+  "keywords": ["chair", "metal"],
+  "category": "Furniture",
+  "material": "Steel",
+  "color": ["Silver"],
+  "surface": "Polished",
+  "limit": 5
+}
+\`\`\`
+
+Schema Reference:
+${JSON.stringify(schema.fields.map(f => ({ name: f.name, values: f.values })), null, 2)}
+
+User said: "${userPrompt}"
+Previous context: "${lastUserPrompt || 'none'}"
+        `;
+
+        const chatgptRes = await fetch("/openrouter-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: userPrompt,
+            boundedPrompt: boundedPrompt.trim(),
+            schema,
+            conversationId: currentConversationId
+          })
+        });
+
+        const chatData = await chatgptRes.json();
+        chatBox.lastChild.remove();
+
+        const aiReply = chatData.reply?.trim() || "⚠️ No response from AI";
+        const friendlyReply = aiReply.split("```json")[0].trim();
+        appendMessage("bot", friendlyReply || "⚠️ Please ask about a product.");
+
+        // Extract JSON
+        try {
+          const jsonMatch = aiReply.match(/```json([\s\S]*?)```/);
+          const cleanJSON = jsonMatch ? jsonMatch[1] : aiReply.match(/\{[\s\S]*\}/)?.[0];
+          const jsonKeys = JSON.parse(cleanJSON.replace(/[\u201C\u201D]/g, '"').replace(/,(\s*})/g, "$1"));
+          extractedKeywords = jsonKeys.keywords || [];
+
+          if (!Array.isArray(extractedKeywords) || !extractedKeywords.length) {
+            appendMessage("bot", "⚠️ No keywords extracted. Try again.");
+            return;
+          }
+
+          const productRes = await fetch("/products/api/search-products-keys", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(jsonKeys)
+          });
+
+          productResults = await productRes.json();
+          productPage = 0;
+
+          if (!productResults.length)
+            appendMessage("bot", "⚠️ No products found for your query.");
+          else showProductsPage();
+
+          currentConversationId = chatData.conversationId || currentConversationId;
+          localStorage.setItem("currentConversationId", currentConversationId);
+          loadConversations();
+
+        } catch (err) {
+          console.error("❌ JSON parsing failed:", err);
+          appendMessage("bot", "⚠️ Couldn’t extract search keys.");
+        }
+
+      } catch (err) {
+        console.error("❌ Chat error:", err);
+        chatBox.lastChild.remove();
+        appendMessage("bot", "⚠️ Error. Please try again.");
+      }
     });
+
+    // New chat
+    document.getElementById("newChat").addEventListener("click", () => {
+      currentConversationId = null;
+      localStorage.removeItem("currentConversationId");
+      chatBox.innerHTML = "";
+      appendMessage("bot", "👋 New chat started. Ask about any product.");
+      document.querySelectorAll('.chat-item').forEach(b => b.classList.remove('active'));
+      sidebar.classList.add("hidden");
+    });
+
+    // Sidebar toggle
+    hamburger.addEventListener("click", () => {
+      sidebar.classList.toggle("hidden");
+    });
+
+    // Initialize
+    (async function init() {
+      await loadProductSchema();
+      await loadConversations();
+      appendMessage("bot", "👋 Welcome! Ask me about any product or material.");
+    })();
   </script>
 </body>
 </html>

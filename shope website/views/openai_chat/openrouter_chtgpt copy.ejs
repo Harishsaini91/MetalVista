@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Assistant | OpenRouter Chat</title>
+  <link rel="stylesheet" href="/css/openrouter_chatgpt.css">
+</head>
+
+<body>
+  <header>
+    🤖 AI Chat Assistant
+    <button id="hamburger">☰</button>
+  </header>
+
+  <div id="chatContainer">
+    <div id="sidebar" class="hidden">
+      <button id="newChat">+ New Chat</button>
+      <h3>Your Chats</h3>
+      <div id="chatList"></div>
+    </div>
+
+    <div id="chatBox"></div>
+  </div>
+
+  <form id="chatForm">
+    <input type="text" id="prompt" placeholder="Type your message..." autocomplete="off" required />
+    <button type="submit">Send</button>
+  </form>
+
+  <script>
+    const chatBox = document.getElementById("chatBox");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("prompt");
+    const chatList = document.getElementById("chatList");
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.getElementById("hamburger");
+
+    let currentConversationId = localStorage.getItem("currentConversationId") || null;
+    let productResults = [];
+    let productPage = 0;
+    const PRODUCTS_PER_PAGE = 5;
+
+    // ✅ Store keywords in a separate variable
+    let extractedKeywords = [];
+
+    // --- Utility: append chat messages ---
+    function appendMessage(role, text, html = false) {
+      const div = document.createElement("div");
+      div.classList.add("message", role);
+      if (html) div.innerHTML = text;
+      else div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // --- Load chat history ---
+    async function loadConversations() {
+      try {
+        const res = await fetch("/openrouter-chat/history");
+        const data = await res.json();
+        chatList.innerHTML = "";
+
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach(c => {
+            const div = document.createElement("div");
+            div.classList.add("chat-item");
+            div.innerHTML = `
+              <span>${c.title || 'Untitled Chat'}</span>
+              <button class="delete-btn" title="Delete Chat">🗑</button>
+            `;
+            div.querySelector("span").onclick = () => loadChat(c.conversationId, div);
+            div.querySelector(".delete-btn").onclick = async (e) => {
+              e.stopPropagation();
+              if (!confirm("🗑 Delete this chat?")) return;
+              await fetch(`/openrouter-chat/history/${c.conversationId}`, { method: "DELETE" });
+              if (currentConversationId === c.conversationId) {
+                chatBox.innerHTML = "";
+                appendMessage("bot", "💬 Chat deleted. Start a new one!");
+                localStorage.removeItem("currentConversationId");
+                currentConversationId = null;
+              }
+              loadConversations();
+            };
+            chatList.appendChild(div);
+          });
+        } else {
+          chatList.innerHTML = "<p style='color:#aaa;font-size:14px;margin:10px;'>No previous chats</p>";
+        }
+      } catch (err) {
+        console.error("⚠️ Failed to load conversations:", err);
+      }
+    }
+
+    // --- Load selected chat ---
+    async function loadChat(conversationId, element) {
+      currentConversationId = conversationId;
+      localStorage.setItem("currentConversationId", conversationId);
+      chatBox.innerHTML = "";
+      const res = await fetch(`/openrouter-chat/history/${conversationId}`);
+      const data = await res.json();
+      document.querySelectorAll('.chat-item').forEach(b => b.classList.remove('active'));
+      element.classList.add('active');
+      data.messages.forEach(m => appendMessage(m.role === "user" ? "user" : "bot", m.content));
+      sidebar.classList.add("hidden");
+    }
+
+    // --- Show products in chat ---
+    function showProductsPage() {
+      const start = productPage * PRODUCTS_PER_PAGE;
+      const end = start + PRODUCTS_PER_PAGE;
+      const items = productResults.slice(start, end);
+
+      if (items.length === 0) return;
+
+      let html = "<div class='product-container'>";
+      items.forEach(p => {
+        html += `
+          <div class='product-card'>
+            <img src="${p.imageUrl}" width="80" />
+            <h4>${p.product_name}</h4>
+            <a href="/product_details?image=${p.imageName}" target="_blank">View Product</a>
+          </div>
+        `;
+      });
+      html += "</div>";
+
+      if (end < productResults.length) {
+        html += `<button id="nextProducts">View Next ${PRODUCTS_PER_PAGE}</button>`;
+      }
+
+      appendMessage("bot", html, true);
+
+      const nextBtn = document.getElementById("nextProducts");
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+          productPage++;
+          nextBtn.remove();
+          showProductsPage();
+        });
+      }
+    }
+
+    // --- Fetch & store schema locally ---
+    async function loadProductSchema() {
+      const cached = localStorage.getItem("productSchema");
+      if (cached) return JSON.parse(cached);
+      try {
+        const res = await fetch("/products/api/get-schema");
+        const schema = await res.json();
+        localStorage.setItem("productSchema", JSON.stringify(schema));
+        return schema;
+      } catch (err) {
+        console.error("❌ Failed to fetch product schema:", err);
+        appendMessage("bot", "⚠️ Unable to load product data. Some queries may not work.");
+        return null;
+      }
+    }
+
+   // --- Handle form submit ---
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const userPrompt = input.value.trim();
+  if (!userPrompt) return;
+
+  appendMessage("user", userPrompt);
+  input.value = "";
+  appendMessage("bot", "⏳ Thinking...");
+
+  try {
+    const schema = await loadProductSchema();
+    if (!schema) {
+      appendMessage("bot", "⚠️ Product schema not available.");
+      return;
+    }
+
+    // ✅ Strict AI prompt: friendly reply + keywords array
+    const boundedPrompt = `
+You are a professional AI shop assistant.
+
+Your task has two parts:
+
+1️⃣ First, rewrite the user's message in a short, friendly, human-like way using correct spelling and grammar.  
+   - Keep it concise and natural.  
+   - Add only small clarifications if needed to make the intent clear.
+
+2️⃣ On a **new line**, output **ONLY** a valid JSON object enclosed in triple backticks **exactly** like this:
+
+\`\`\`json
+{
+  "keywords": ["list", "of", "related", "terms"],
+  "category": "optional",
+  "material": "optional",
+  "color": ["optional", "multiple"],
+  "weight": "optional",
+  "capacity": "optional",
+  "surface": "optional"
+}
+\`\`\`
+
+Rules you MUST follow:
+- The "keywords" array **must include all related nouns, product names, and synonyms** found or implied in the user's query.
+- Always ensure **valid JSON** syntax with double quotes and commas.
+- If a field is not relevant, set it to **null**.
+- The JSON block must appear on its own line, separate from any text.
+- Do not add explanations or text after the JSON.
+- Do not use markdown outside the triple backticks.
+
+User message: "${userPrompt}"
+`;
+
+    const chatgptRes = await fetch("/openrouter-chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: userPrompt,
+        boundedPrompt: boundedPrompt.trim(),
+        schema,
+        conversationId: currentConversationId
+      })
+    });
+
+    const chatData = await chatgptRes.json();
+    chatBox.lastChild.remove();
+
+    const aiReply = chatData.reply?.trim() || "⚠️ No response from AI";
+
+    // --- Friendly reply ---
+    const friendlyReply = aiReply.split("```json")[0].trim();
+    appendMessage("bot", friendlyReply || "⚠️ Please ask something about products.");
+
+    // --- Extract JSON block safely ---
+    try {
+      let jsonKeys = {};
+      const jsonMatch = aiReply.match(/```json([\s\S]*?)```/);
+
+      if (jsonMatch && jsonMatch[1]) {
+        const cleanJSON = jsonMatch[1]
+          .replace(/[\u201C\u201D]/g, '"')   // fix smart quotes
+          .replace(/,(\s*})/g, "$1")         // remove trailing commas
+          .replace(/(\r\n|\n|\r)/gm, "");    // remove newlines
+        jsonKeys = JSON.parse(cleanJSON.trim());
+      } else {
+        // fallback if model returns without ```json
+        const braceMatch = aiReply.match(/\{[\s\S]*\}/);
+        if (braceMatch) {
+          const cleanBrace = braceMatch[0]
+            .replace(/[\u201C\u201D]/g, '"')
+            .replace(/,(\s*})/g, "$1");
+          jsonKeys = JSON.parse(cleanBrace.trim());
+        }
+      }
+
+      // ✅ Validate or fallback to empty defaults
+      if (!Array.isArray(jsonKeys.keywords)) {
+        console.warn("⚠️ Invalid or missing 'keywords' array — defaulting to []");
+        jsonKeys.keywords = [];
+      }
+
+      extractedKeywords = jsonKeys.keywords;
+      console.log("🗝️ Extracted keywords array:", extractedKeywords);
+
+      // --- Fetch products only if keywords exist ---
+      if (!extractedKeywords.length) {
+        appendMessage("bot", "⚠️ I couldn’t extract keywords. Please rephrase your request.");
+        return;
+      }
+
+      const productRes = await fetch("/products/api/search-products-keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonKeys)
+      });
+
+      productResults = await productRes.json();
+      productPage = 0;
+
+      if (!productResults.length)
+        appendMessage("bot", "⚠️ No products found for your request.");
+      else showProductsPage();
+
+      currentConversationId = chatData.conversationId || currentConversationId;
+      localStorage.setItem("currentConversationId", currentConversationId);
+      loadConversations();
+
+    } catch (err) {
+      console.error("❌ JSON parse error or product fetch failed:", err);
+      appendMessage("bot", "⚠️ Failed to extract keywords or fetch products. Retrying...");
+
+      // 🌀 Auto-retry once if invalid JSON
+      setTimeout(async () => {
+        const retry = await fetch("/openrouter-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: `Reformat this strictly as valid JSON:\n\n${aiReply}`,
+          }),
+        });
+        const retryData = await retry.json();
+        console.log("🔁 Retry AI response:", retryData.reply);
+      }, 1000);
+    }
+
+  } catch (err) {
+    console.error("❌ Chat error:", err);
+    chatBox.lastChild.remove();
+    appendMessage("bot", "⚠️ Something went wrong. Please ask only about store products or materials.");
+  }
+}); // ✅ closes form event listener properly
+
+
+    // --- New chat ---
+    document.getElementById("newChat").addEventListener("click", () => {
+      currentConversationId = null;
+      localStorage.removeItem("currentConversationId");
+      chatBox.innerHTML = "";
+      appendMessage("bot", "👋 Hello! New chat started. Ask about any product or material.");
+      document.querySelectorAll('.chat-item').forEach(b => b.classList.remove('active'));
+      sidebar.classList.add("hidden");
+    });
+
+    // --- Hamburger toggle ---
+    hamburger.addEventListener("click", () => {
+      sidebar.classList.toggle("hidden");
+    });
+
+    // --- Initialize ---
+    (async function init() {
+      await loadProductSchema();
+      await loadConversations();
+      appendMessage("bot", "👋 Welcome! Ask me anything about products or store materials.");
+    })();
+
+     </script>
+</body>
+
+</html>

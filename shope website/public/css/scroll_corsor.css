@@ -1,0 +1,114 @@
+
+.carousel-section {
+  padding: 20px;
+  background-color: #DFDCE3;
+  margin-top: 90px;
+  margin-bottom: 90px;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover glow effect for the whole section */
+.carousel-section:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transform: scale(1.01);
+}
+
+/* Main container */
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Scrollable row */
+.carousel-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+  cursor: grab;
+}
+.carousel-track:active {
+  cursor: grabbing;
+}
+
+/* Item wrappers */
+.carousel-item-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+/* Individual items */
+.carousel-item {
+  min-width: 428px;
+  height: 370px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 20px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  background-color: #ffffff70;
+}
+.carousel-item:hover {
+  transform: scale(1.05);
+}
+
+/* Admin edit icon */
+.edit-icon {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 5px 8px;
+  border-radius: 8px;
+  color: #000;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.carousel-item-wrapper:hover .edit-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Scroll bar below carousel */
+.scroll-progress {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  margin-top: 10px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.scroll-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #007bff, #00c6ff);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.05s linear;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .carousel-item {
+    min-width: 300px;
+    height: 250px;
+  }
+}
+@media (max-width: 480px) {
+  .carousel-item {
+    min-width: 240px;
+    height: 180px;
+  }
+}

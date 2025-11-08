@@ -14,16 +14,16 @@ searchBar.addEventListener("input", async (e) => {
   const res = await fetch(`/products/api/search-products?q=${encodeURIComponent(query)}`);
   const products = await res.json();
 
-  showSuggestions(products);
+  showSuggestions(products); 
 });
- 
+  
 function showSuggestions(products) {
   if (!products.length) {
     suggestionsDiv.innerHTML = "<div class='suggestion-item'>No matches</div>";
     suggestionsDiv.style.display = "block";
     return;
   }
-
+ 
   // suggestionsDiv.innerHTML = products.map(p => `
   //   <div class="suggestion-item" onclick="viewProduct('${p.imageName}')">
   //     <img src="${p.imageUrl}" width="40" height="40" />
@@ -61,5 +61,8 @@ overlay.addEventListener("click", () => {
 
 function updateCurrentImageName(imageName) {
   const input = document.getElementById("currentImageName2");
-  if (input) input.value = imageName;
+  if (input) input.value = imageName; 
 }
+
+
+

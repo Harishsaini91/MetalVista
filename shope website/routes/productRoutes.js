@@ -100,40 +100,7 @@ router.post('/model/delete-value', async (req, res) => {
 
 
 
-/** 
- * ✅ GET: Full Product Entry Form (popup)
- */
-// router.get('/full-entry', async (req, res) => {
-//   try {
-//     const imageName = req.query.imageName || null;
-
-//     // Load base model
-//     const model = await ProductModelSchema.findOne();
-
-//     let product = null;
-//     let savedData = null;
-
-//     if (imageName) {
-//       // ✅ find product by its `name` (image filename)
-//       product = await product_model_data.findOne({ name: imageName });
-
-//       // ✅ also fetch savedData related to that image
-//       savedData = await ProductModelData.findOne({ imageName });
-//     }
-
-//     res.render('product_full_entry', {
-//       model,
-//       imageName,
-//       savedData,
-//       product_name: product ? product.product_name : null,
-//       subnames: product ? product.subnames : [],
-//       product
-//     });
-//   } catch (err) {
-//     console.error("Error in /full-entry:", err);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
+ 
 
 router.get('/full-entry', async (req, res) => {
   try {
@@ -187,252 +154,21 @@ router.post('/save-model-data', async (req, res) => {
   );
 
   res.send("✅ Field data saved!");
-});
+}); 
  
-
-// 
-
-// router.get('/api/search-products', async (req, res) => {
-//   const query = req.query.q?.toLowerCase();
-//   if (!query) return res.json([]);
-
-//   try {
-//     const matches = await ProductModelData.find({
-//       $or: [
-//         { imageName: { $regex: query, $options: 'i' } },
-//         { 'selectedFields': { $regex: query, $options: 'i' } }
-//       ]
-//     }).limit(10);
-
-//     const formatted = matches.map(p => ({
-//       id: p._id,
-//       name: p.imageName,
-//       imageUrl: `/images/uploded_image/${p.imageName}`,
-//       imageName: p.imageName
-//     }));
-
-//     res.json(formatted);
-//   } catch (err) {
-//     console.error("Search error:", err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// });
-
-
-// router.get('/api/search-products', async (req, res) => {
-//   const query = req.query.q?.toLowerCase();
-//   if (!query) return res.json([]);
-
-//   try {
-//     const matches = await ProductModelData.find();
-
-//     const filtered = matches.filter(product => {
-//       const matchInName = product.imageName?.toLowerCase().includes(query);
-//       const matchInFields = Object.values(product.selectedFields || {}).some(values =>
-//         values.some(val => val.toLowerCase().includes(query))
-//       );
-//       return matchInName || matchInFields;
-//     });
-
-//     const formatted = filtered.map(p => ({
-//       id: p._id,
-//       name: p.imageName,
-//       imageUrl: `/images/uploded_image/${p.imageName}`, 
-//       imageName: p.product_name
-//     }));
-
-//     res.json(formatted);
-//   } catch (err) {
-//     console.error("Search error:", err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// });
-
-
-router.get('/api/search-products', async (req, res) => {
-  const query = req.query.q?.toLowerCase();
-  if (!query) return res.json([]);
-
-  try {
-    // Search by product_name, imageName, subnames, and selectedFields
-    const matches = await ProductModelData.find({
-      $or: [
-        { product_name: { $regex: query, $options: "i" } },
-        { imageName: { $regex: query, $options: "i" } },
-        { subnames: { $elemMatch: { $regex: query, $options: "i" } } },
-        // Search inside selectedFields values (converted to string)
-        { "selectedFields.category": { $regex: query, $options: "i" } },
-        { "selectedFields.brand": { $regex: query, $options: "i" } },
-        { "selectedFields.type": { $regex: query, $options: "i" } }
-      ]
-    });
-
-    const formatted = matches.map(p => ({
-      id: p._id,
-      product_name: p.product_name, // ✅ human-readable name
-      imageUrl: `/images/uploded_image/${p.imageName}`, 
-      imageName: p.imageName  // ✅ actual image filename (used for routing)
-    }));
-
-    res.json(formatted);
-  } catch (err) {
-    console.error("Search error:", err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-
-
-// router.post('/update-product', async (req, res) => {
-//   try {
-//     const { imageName, product_name, subnames } = req.body;
-
-//     // convert comma separated string -> array
-//     const subnamesArray = subnames ? subnames.split(",").map(s => s.trim()) : [];
-
-//     await slide2_model.findOneAndUpdate(
-//       { name: imageName },   // match uploaded image filename
-//       { product_name, subnames: subnamesArray },
-//       { new: true }
-//     );
-
-//     res.redirect(`/full-entry?imageName=${imageName}`);
-//   } catch (err) {
-//     console.error("Error updating product:", err);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
+   
  
-// router.post('/update-product', async (req, res) => {
-//   try {
-//     const { imageName, product_name, subnames } = req.body;
-
-//     // convert comma separated string -> array
-//     const subnamesArray = subnames ? subnames.split(",").map(s => s.trim()) : [];
-
-//     await slide2_model.findOneAndUpdate(
-//       { name: imageName },   // match uploaded image filename
-//       { product_name, subnames: subnamesArray },
-//       { new: true }
-//     );
-
-//     // res.redirect(`/products/full-entry?imageName=${imageName}`);
-//   } catch (err) {
-//     console.error("Error updating product:", err);
-//     res.status(500).send("Internal Server Error");
-//   }  
-// });
-
-
-// router.post('/update-product', async (req, res) => {
-//   try {
-//     const { category, imageName, product_name, subnames } = req.body;
-
-//     // Convert comma-separated string → array
-//     const subnamesArray = subnames ? subnames.split(",").map(s => s.trim()) : [];
-
-//     // 1️⃣ First check in slide2_model
-//     const updatedSlide2 = await slide2_model.findOneAndUpdate(
-//       { name: imageName },   // match uploaded image filename
-//       { product_name, subnames: subnamesArray },
-//       { new: true }
-//     );
-
-//     if (updatedSlide2) {
-//       console.log("✅ Updated inside slide2_model");
-//       return res.redirect(`/products/full-entry?imageName=${imageName}`);
-//     }
-
-//     // 2️⃣ If not found in slide2_model → check in product_model (new schema)
-//     const updatedProduct = await product_model.findOneAndUpdate(
-//       { [`${category}.imageName`]: imageName },  
-//       { 
-//         $set: { 
-//           [`${category}.$.product_name`]: product_name,
-//           [`${category}.$.subnames`]: subnamesArray
-//         }
-//       },
-//       { new: true }
-//     );
-
-//     if (updatedProduct) {
-//       console.log("✅ Updated inside product_model (existing entry)");
-//       return res.redirect(`/products/full-entry?imageName=${imageName}`);
-//     }
-
-//     // 3️⃣ If not found in either → push new into product_model
-//     await product_model.updateOne(
-//       {}, // update first document (you might later want category-specific docs)
-//       { $push: { [category]: { imageName, product_name, subnames: subnamesArray } } }
-//     );
-
-//     console.log("🆕 Added new product inside product_model");
-//     res.redirect(`/products/full-entry?imageName=${imageName}`);
-
-//   } catch (err) {
-//     console.error("❌ Error updating product:", err);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
-
-
-// router.post('/update-product', async (req, res) => {
-//   try {
-//     const { imageName, product_name, subnames } = req.body;
-
-//     // Convert comma-separated string → array
-//     const subnamesArray = subnames ? subnames.split(",").map(s => s.trim()) : [];
-
-//     // 1️⃣ Try update if product already exists
-//     const updatedProduct = await ProductModelData.findOneAndUpdate(
-//       { imageName },   // match by uploaded image filename
-//       { product_name, subnames: subnamesArray },
-//       { new: true }
-//     );
-
-//     if (updatedProduct) {
-//       console.log("✅ Updated existing product in ProductModelData");
-//       return res.redirect(`/products/full-entry?imageName=${imageName}`);
-//     }
-
-// // 2️⃣ If not found → create new entry
-// const slide2Doc = await slide2_model.findOne({ name: imageName });
-// if (!slide2Doc) {
-//   return res.status(400).send("No matching slide2_model found for this image");
-// }
-
-// const newProduct = new ProductModelData({
-//   productId: slide2Doc._id,   // ✅ ensure productId exists
-//   imageName,
-//   product_name,
-//   subnames: subnamesArray
-// });
-
-// await newProduct.save();
-
-
-//     console.log("🆕 Added new product in ProductModelData");
-//     res.redirect(`/products/full-entry?imageName=${imageName}`);
-
-//   } catch (err) {
-//     console.error("❌ Error updating product:", err);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
 
 // 📌 Update or create product entry
-router.post("/update-product", async (req, res) => {
+router.post("/update-product", async (req, res) => { 
   try {
     const { imageName, product_name, subnames } = req.body;
 
     // ✅ Guard clause for required fields
     if (!imageName || !product_name) {
       return res.status(400).send("❌ imageName and product_name are required");
-    }
-
+    }    
+   
     // ✅ Convert comma-separated → unique trimmed array
     const subnamesArray = subnames
       ? [...new Set(subnames.split(",").map(s => s.trim()).filter(Boolean))]
@@ -443,7 +179,7 @@ router.post("/update-product", async (req, res) => {
       { imageName },
       { product_name, subnames: subnamesArray },
       { new: true, runValidators: true }
-    );
+    ); 
 
     if (product) {
       console.log("✅ Updated existing product:", product._id);
@@ -471,5 +207,56 @@ router.post("/update-product", async (req, res) => {
 
 
 
+// 🔍 Search products by name, image, subnames, or selected fields
+router.get('/api/search-products', async (req, res) => {
+  const query = req.query.q;
+  if (!query) return res.json([]);
+
+  // Split query into individual keywords, ignore empty strings
+  const keywords = query
+    .toLowerCase()
+    .split(' ')
+    .filter(k => k.trim() !== '');
+
+  try {
+    // Build $or conditions for each keyword
+    const orConditions = keywords.flatMap(keyword => ([
+      { product_name: { $regex: keyword, $options: "i" } },
+      { imageName: { $regex: keyword, $options: "i" } },
+      { subnames: { $elemMatch: { $regex: keyword, $options: "i" } } },
+      { "selectedFields.category": { $regex: keyword, $options: "i" } },
+      { "selectedFields.brand": { $regex: keyword, $options: "i" } },
+      { "selectedFields.type": { $regex: keyword, $options: "i" } },
+      { "selectedFields.material": { $regex: keyword, $options: "i" } },
+      { "selectedFields.color": { $regex: keyword, $options: "i" } },
+      { "selectedFields.weight": { $regex: keyword, $options: "i" } },
+      { "selectedFields.surface": { $regex: keyword, $options: "i" } },
+      { "selectedFields.foldable": { $regex: keyword, $options: "i" } },
+      { "selectedFields.usage": { $regex: keyword, $options: "i" } },
+      { "selectedFields.isNew": { $regex: keyword, $options: "i" } },
+      { "selectedFields.servicesIncluded": { $regex: keyword, $options: "i" } },
+      { "selectedFields.style": { $regex: keyword, $options: "i" } }
+    ]));
+
+    // Query products matching any keyword in any field
+    const matches = await ProductModelData.find({ $or: orConditions });
+
+    // Format response
+    const formatted = matches.map(p => ({
+      id: p._id,
+      product_name: p.product_name,
+      imageUrl: `/images/uploded_image/${p.imageName}`,
+      imageName: p.imageName
+    }));  
+
+    res.json(formatted);
+
+  } catch (err) {
+    console.error("Search error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+ 
+
 module.exports = router;
-  
+   

@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Page</title>
   <link rel="stylesheet" href="/css/homepage.css">
+  <link rel="stylesheet" href="/css/scroll-helper.css">
+  <link rel="stylesheet" href="/css/scroll_corsor.css">
 </head>
 
 <body>
@@ -16,7 +18,7 @@
       <div class="slide" style="background-image: url('./images/default.jpg');">
 
         <nav class="navbar">
-          <div class="logo">Logo</div>
+          <div class="logo" ><img src="./images/logo/shope_logo.svg" alt="Logo"></div>
 
           <div id="overlay"></div>
 
@@ -45,7 +47,9 @@
             <% } else { %>
               <li><a href="/logout">Logout</a></li>
             <% } %>
+                 <% if (userRole == "admin") { %>
             <button onclick="openModelWindow()">➕ Update product models</button>
+               <% } %>
           </ul>
 
           <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
@@ -54,6 +58,7 @@
             <ul>
                 <% if (userRole === 'admin') { %>
               <li><a href="/admin/chat">Admin Chat</a></li>
+
             <% } %>
               <% if (userRole === 'user') { %>
                 <li><a href="/user/chat">Chat Support</a></li>
@@ -68,7 +73,9 @@
               <% } else { %>
                 <li><a href="/logout">Logout</a></li>
               <% } %>
+               <% if (userRole === 'admin') { %>
               <button onclick="openModelWindow()">➕ Add New Product</button>
+                  <% } %>
             </ul>
           </div>
         </nav>
@@ -106,6 +113,20 @@
     </div>
   <% } %>
 
+<!-- Scroll Helper -->
+<div id="scroll-wrapper">
+  <div id="scroll-helper">
+    <div id="scroll-main-btn" title="Scroll Options">⇅</div>
+    <div id="scroll-options">
+      <button id="scroll-top">⬆</button>
+      <button id="scroll-bottom">⬇</button>
+    </div>
+  </div>
+</div>
+
+
+
+
   <section class="product-range">
     <h2>Product Range</h2>
     <div class="products">
@@ -132,7 +153,7 @@
     </div>
   </section>
 
-  <section class="carousel-section">
+  <!-- <section class="carousel-section">
     <% if (userRole == 'admin') { %>
       <button onclick="openProductUpload()">➕ Add Product with Details</button>
       <div class="delete-section">
@@ -154,13 +175,68 @@
                  onmouseover="updateCurrentImageName('<%= slide.name %>')"
                  style="background-image: url('./images/uploded_image/<%= slide.name %>');">
               </a>
+                  <% if (userRole === 'admin') { %>
               <a class="edit-icon" href="" title="Edit Schema" onclick="openSchemaEditor('<%= slide.name %>'); event.stopPropagation();">📝</a>
+                  <% } %>
             </div>
           <% }) %>
         <% } %>
       </div>
     </div>
-  </section>
+
+
+    <div class="scroll-progress">
+      <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+  </div>
+  </section> -->
+
+<section class="carousel-section" id="carouselSection">
+  <% if (userRole === 'admin') { %>
+    <button class="add-product-btn" onclick="openProductUpload()">➕ Add Product with Details</button>
+
+    <div class="delete-section">
+      <form action="/delete_image" method="post">
+        <input type="text" id="currentImageName2" name="imageName" readonly>
+        <input type="hidden" name="slide2" value="2">
+        <button type="submit" class="image_up">Delete</button>
+      </form>
+    </div>
+  <% } %>
+
+  <div class="carousel">
+    <div class="carousel-track" id="carouselTrack">
+      <% if (slides2 && slides2.length > 0) { %>
+        <% slides2.forEach((slide) => { %>
+          <div class="carousel-item-wrapper">
+            <a href="/product_details?image=<%= slide.name %>"
+               class="carousel-item"
+               style="background-image: url('./images/uploded_image/<%= slide.name %>');">
+            </a>
+
+            <% if (userRole === 'admin') { %>
+              <a class="edit-icon"
+                 href="#"
+                 title="Edit Schema"
+                 onclick="openSchemaEditor('<%= slide.name %>'); event.stopPropagation();">
+                📝
+              </a>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p>No images available.</p>
+      <% } %>
+    </div>
+
+    <!-- ✅ Scroll controller bar -->
+    <div class="scroll-progress" id="scrollBar">
+      <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+  </div>
+</section>
+
+
 
   <section>
     <div class="slider2">
@@ -203,8 +279,13 @@
 
   <section class="location">
     <h2>Our Location</h2>
-    <p>📍 Dayabai Bypass Road, near Canal, close to Mili ka Gotar, Narnaul (Rewari)</p>
-    <p>Our convenient location ensures easy access for all customers in and around the Narnaul area.</p>
+    <p style="color: green; text-decoration:underline">
+  <a href="https://maps.app.goo.gl/KeB3nFaW9F47aiGP8" target="_blank" style="text-decoration: none; color: inherit;">
+    📍 Daya nagar, narnaul Bypass Road, near BPS school (BHARTI PUBLIC SR SEC SCHOOL), Narnaul, Mahendragarh, Haryana, pin-123001
+  </a>
+</p>
+
+  <p>Our convenient location ensures easy access for all customers in and around the Narnaul area.</p>
   </section>
 
   <section class="contact">
@@ -228,9 +309,17 @@
     window.slidesData2 = <%- JSON.stringify(slides2) %>;
   </script>
   <script src="/js/slider.js"></script>
+  <script src="/js/scroll-helper.js"></script>
   <script src="/js/slider1.js"></script>
   <script src="/js/slider2.js"></script>
   <script src="/js/search.js"></script>
+  <script src="/js/scrollbar_adn_cursor.js"></script>
+
 </body>
+
+
+
+
+
 
 </html>

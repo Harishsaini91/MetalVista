@@ -5,7 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Website</title>
+  <link rel="stylesheet" href="/css/scroll-helper.css">
+
   <link rel="stylesheet" href="../css/product_details.css">
+  <link rel="stylesheet" href="../css/homepage.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -19,7 +22,8 @@
 <div class="slide" style="background-image: url('/images/default.jpg');">
 
           <nav class="navbar">
-            <div class="logo">Logo</div>
+                   <div class="logo" ><img src="./images/logo/shope_logo.svg" alt="Logo"></div>
+
 
                   <div id="overlay"></div>
 
@@ -51,30 +55,32 @@
                   <li><a href="/logout">Logout</a></li>
                   
                   <% }  %> 
-            <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
+                 <div class="menu-icon background-icons" onclick="toggleMenu()">☰</div>
 
-            <!-- Menu -->
-            <div class="menu background-icons" id="menu">
-              <ul>
-                <% if (userRole === 'user') { %>
-<li><a href="/user/chat">Chat Support</a></li>
-<% } %>
-                <li><a href="/home">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/product?category=indoor">Product</a></li>
+          <div class="menu background-icons" id="menu">
+            <ul>
+                <% if (userRole === 'admin') { %>
+              <li><a href="/admin/chat">Admin Chat</a></li>
 
-                         <% if (userRole === 'user') { %>
-<li> <a href="/payments/create">Create Payment</a></li>
-<li> <a href="/payments/history">View Payment History</a>
-<% } %>
-            </li>
- <% if (!userRole) { %>
+            <% } %>
+              <% if (userRole === 'user') { %>
+                <li><a href="/user/chat">Chat Support</a></li>
+              <% } %>
+            <li><a href="/openrouter-chtgpt-chat">Chat Ai</a></li>
+
+              <li><a href="/home">Home</a></li>
+              <li><a href="/about">About</a></li>
+              <li><a href="/product?category=indoor">Product</a></li>
+              <% if (!userRole) { %>
                 <li><a href="/sign_in" onclick="openLoginWindow()">Sign In</a></li>
-                <% }else{  %> 
-                  <li><a href="/logout">Logout</a></li>
-                  
-                  <% }  %> 
-            </div>
+              <% } else { %>
+                <li><a href="/logout">Logout</a></li>
+              <% } %>
+               <% if (userRole === 'admin') { %>
+              <button onclick="openModelWindow()">➕ Add New Product</button>
+                  <% } %>
+            </ul>
+          </div>
             
           </nav>
 
@@ -92,7 +98,18 @@
   </header>
   <!-- text info -->
 
- 
+ <!--  -->
+  <!-- Scroll Helper -->
+<div id="scroll-wrapper">
+  <div id="scroll-helper">
+    <div id="scroll-main-btn" title="Scroll Options">⇅</div>
+    <div id="scroll-options">
+      <button id="scroll-top">⬆</button>
+      <button id="scroll-bottom">⬇</button>
+    </div>
+  </div>
+</div>
+
  
 
   <!-- Normal product details -->
@@ -241,10 +258,22 @@
 
   <!-- 3d object -->
 
-  <section class="section_3d">
+  <!-- <section class="section_3d">
 
     <div id="viewer-container">
-  </section>
+  </section> -->
+
+  <section class="section_3d">
+  <div id="viewer-container" style="position: relative;">
+    <!-- Your 3D viewer content -->
+
+    <!-- Zoom buttons inside viewer -->
+    <div class="zoom-btns">
+      <button id="zoom-in">＋</button>
+      <button id="zoom-out">－</button>
+    </div>
+  </div>
+</section>
 
 
 
@@ -359,17 +388,7 @@ function toggleMenu() {
   menu.classList.toggle("show");  // Show or hide the menu when the icon is clicked
 }
 
-// Hide the menu when mouse moves outside
-document.addEventListener('click', function(event) {
-  const menu = document.getElementById("menu");
-  const menuIcon = document.querySelector(".menu-icon");
-  
-  // Close the menu if the click is outside the menu or icon
-  if (!menu.contains(event.target) && event.target !== menuIcon) {
-    menu.classList.remove("show");
-  }
-});
-
+ 
 
 
  
@@ -459,6 +478,9 @@ loadProduct("68a96938e64fdbb6ecefaaa2"); // <-- productId from DB
 
   <script src="/js/viewer.js"></script>
   <script src="/js/search.js"></script>
+  <script src="/js/scroll-helper.js"></script>
+  <script src="/js/home_page.js"></script>
+
   <!-- <script src="/js/slider.js"></script> -->
 
 </body>
