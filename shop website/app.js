@@ -9,7 +9,7 @@ const http = require('http');
 const socketio = require('socket.io');
 require('dotenv').config();   
   
-console.log("ENV TEST:", process.env.RAZORPAY_KEY_ID); 
+console.log("ENV TEST:", process.env.RAZORPAY_KEY_ID);
 
 // --------------------------- 
 // Database connection
@@ -18,11 +18,11 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/shop")
   .then(() => console.log("Database connected"))
   .catch(err => console.error("MongoDB connection error:", err));
 
-// --------------------------- 
+// ---------------------------
 // Session configuration 
 // ---------------------------
 const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'your-secret',  
+  secret: process.env.SESSION_SECRET || 'your-secret', 
   resave: false, 
   saveUninitialized: false,
   store: MongoStore.create({
@@ -76,9 +76,6 @@ const orderRoutes = require('./routes/orderRoutes');
 const productModelRoutes = require('./routes/productModelRoutes');
 const schema_ai = require("./routes/products"); // adjust path
 
-
-const cloudProductRoutes = require('./routes/cloud_productRoutes');
-app.use('/', cloudProductRoutes);
 
 
 app.use("/products", schema_ai);
