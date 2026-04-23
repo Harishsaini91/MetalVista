@@ -153,7 +153,43 @@
     </div>
   </section>
 
-  
+  <!-- <section class="carousel-section">
+    <% if (userRole == 'admin') { %>
+      <button onclick="openProductUpload()">➕ Add Product with Details</button>
+      <div class="delete-section">
+        <form action='/delete_image' method="post">
+          <input type="text" id="currentImageName2" value="" name="imageName" readonly>
+          <input type="hidden" name="slide2" value="2">
+          <button type="submit" class="image_up">Delete</button>
+        </form>
+      </div>
+    <% } %>
+
+    <div class="carousel">
+      <div class="carousel-track">
+        <% if (slides2 && slides2.length > 0) { %>
+          <% slides2.forEach((slide, index) => { %>
+            <div class="carousel-item-wrapper">
+              <a href="/product_details?image=<%= slide.name %>"
+                 class="carousel-item"
+                 onmouseover="updateCurrentImageName('<%= slide.name %>')"
+                 style="background-image: url('./images/uploded_image/<%= slide.name %>');">
+              </a>
+                  <% if (userRole === 'admin') { %>
+              <a class="edit-icon" href="" title="Edit Schema" onclick="openSchemaEditor('<%= slide.name %>'); event.stopPropagation();">📝</a>
+                  <% } %>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+
+
+    <div class="scroll-progress">
+      <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+  </div>
+  </section> -->
 
 <section class="carousel-section" id="carouselSection">
   <% if (userRole === 'admin') { %>
@@ -177,8 +213,6 @@
                class="carousel-item"
                style="background-image: url('./images/uploded_image/<%= slide.name %>');">
             </a>
-
- 
 
             <% if (userRole === 'admin') { %>
               <a class="edit-icon"

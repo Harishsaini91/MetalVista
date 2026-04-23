@@ -230,7 +230,7 @@ router.get('/api/search-products', async (req, res) => {
       { "selectedFields.material": { $regex: keyword, $options: "i" } },
       { "selectedFields.color": { $regex: keyword, $options: "i" } },
       { "selectedFields.weight": { $regex: keyword, $options: "i" } },
-      { "selectedFields.surface": { $regex: keyword, $options: "i" } },
+      { "selectedFields.surface": { $regex: keyword, $options: "i" } }, 
       { "selectedFields.foldable": { $regex: keyword, $options: "i" } },
       { "selectedFields.usage": { $regex: keyword, $options: "i" } },
       { "selectedFields.isNew": { $regex: keyword, $options: "i" } },
