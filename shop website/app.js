@@ -23,7 +23,7 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/shop")
 // ---------------------------
 const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || 'your-secret', 
-  resave: false, 
+  resave: false,  
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/shop",
@@ -37,14 +37,14 @@ app.use(sessionMiddleware);
 
 // ---------------------------
 // Middleware
-// ---------------------------
+// --------------------------- 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ---------------------------
+// --------------------------- 
 // Server & Socket.io
 // ---------------------------
 const server = http.createServer(app);
@@ -76,7 +76,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const productModelRoutes = require('./routes/productModelRoutes');
 const schema_ai = require("./routes/products"); // adjust path
 
-
+  
 
 app.use("/products", schema_ai);
 app.use('/product-model', productModelRoutes);
