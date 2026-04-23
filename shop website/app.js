@@ -15,6 +15,7 @@ console.log("ENV TEST:", process.env.RAZORPAY_KEY_ID);
 // --------------------------------------------------
 // Database Connection
 // --------------------------------------------------
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("🔥 MongoDB Connected"))
