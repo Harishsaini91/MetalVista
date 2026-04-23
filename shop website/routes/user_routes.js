@@ -25,7 +25,7 @@ userRoutes.use(session({
 
 // 
  
-userRoutes.get('/home', routerController.home_page);
+userRoutes.get('/', routerController.home_page);
 // userRoutes.post('/home', condition.roleCheck('admin'), condition.upload.single("image"), routerController.top_slide_image);
 userRoutes.post(
     '/home',
