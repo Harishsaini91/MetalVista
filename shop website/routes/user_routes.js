@@ -5,25 +5,13 @@ const chatController  = require('../controller/chatController');
 const condition = require('../condition/condition');
  
 
-const userRoutes = express();
+const userRoutes = express.Router();
 userRoutes.use(express.json());
 userRoutes.use(bodyParser.json());
 userRoutes.use(bodyParser.urlencoded({ extended: true }));
-userRoutes.set('view engine', 'ejs');
-userRoutes.use(express.static('public'));
-const session = require('express-session');
+// userRoutes.set('view engine', 'ejs');
+// userRoutes.use(express.static('public'));
 
- 
- 
-// 
-userRoutes.use(session({
-    secret: process.env.SESSION_SECRET || 'your-strong-secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } // Change to true for HTTPS
-}));
-
-// 
  
 userRoutes.get('/', routerController.home_page);
 // userRoutes.post('/home', condition.roleCheck('admin'), condition.upload.single("image"), routerController.top_slide_image);

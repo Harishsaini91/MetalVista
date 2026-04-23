@@ -21,18 +21,23 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/shop")
 // ---------------------------
 // Session configuration 
 // ---------------------------
+
 const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'your-secret', 
-  resave: false,   
+  secret: process.env.SESSION_SECRET || 'your-secret',
+  resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/shop",
+    mongoUrl: process.env.MONGO_URI,
     collectionName: 'sessions',
-    ttl: 60 * 60 * 24 // 1 day
+    ttl: 60 * 60 * 24
   }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: false // change to true if HTTPS enforced
+  }
 });
-
 app.use(sessionMiddleware);
 
 // ---------------------------
@@ -118,5 +123,5 @@ app.use((err, req, res, next) => {
 // ---------------------------
 // Start server
 // ---------------------------
-const PORT =  8000;
+const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
