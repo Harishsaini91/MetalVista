@@ -1,6 +1,6 @@
 // controllers/openrouterChatController.js
 const ChatConversation = require('../models/AI_chat/ChatConversation');
-const ProductModelSchema = require('../models/productModelSchema');
+const ProductModelSchema = require('../models/ProductModelSchema');
 const ProductModelData = require('../models/product_model_data');
 const axios = require('axios');
 require('dotenv').config();

@@ -1,7 +1,7 @@
 // ✅ routes/products.js
 const express = require("express");
 const router = express.Router();
-const ProductModelSchema = require("../models/ProductModelSchema"); // <-- your schema file
+const ProductModelSchema = require('../models/ProductModelSchema'); // <-- your schema file
 
 // --- Get product schema ---
 router.get("/api/get-schema", async (req, res) => {
