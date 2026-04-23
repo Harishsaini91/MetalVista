@@ -16,7 +16,7 @@ userRoutes.use(bodyParser.urlencoded({ extended: true }));
 userRoutes.get('/', routerController.home_page);
 // userRoutes.post('/home', condition.roleCheck('admin'), condition.upload.single("image"), routerController.top_slide_image);
 userRoutes.post(
-    '/home',
+    '/',
     condition.roleCheck('admin'), 
     condition.upload.array("images", 20),    
     routerController.top_slide_image  

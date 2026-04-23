@@ -65,7 +65,7 @@
               <% } %>
             <li><a href="/openrouter-chtgpt-chat">Chat Ai</a></li>
 
-              <li><a href="/home">Home</a></li>
+              <li><a href="/">Home</a></li>
               <li><a href="/about">About</a></li>
               <li><a href="/product?category=indoor">Product</a></li>
               <% if (!userRole) { %>
@@ -95,7 +95,7 @@
 
   <% if (userRole == 'admin') { %>
     <div>
-      <form action="/home" method="post" enctype="multipart/form-data" class="admin_image">
+      <form action="/" method="post" enctype="multipart/form-data" class="admin_image">
         <div class="input-group" id="file_here">
           <input type="file" id="image" name="images" placeholder="image" multiple required>
           <input type="hidden" name="slide1" value="1">
