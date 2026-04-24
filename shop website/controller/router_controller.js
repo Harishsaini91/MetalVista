@@ -204,7 +204,7 @@ console.log(req.session.userRole);
           console.error("Session save error:", err);
           return res.status(500).send("Internal server error");
         }
-        res.redirect('/home');
+        res.redirect('/');
       });
     }
   } catch (error) {
@@ -446,7 +446,7 @@ const delete_image = async (req, res) => {
         await unlinkAsync(imagePath);
         console.log(`Deleted: ${imagePath}`);
       }
-      return res.redirect('/home');
+      return res.redirect('/');
     }
 
     if (slide2 == 2) {
@@ -486,7 +486,7 @@ const delete_image = async (req, res) => {
         console.log("No extra image document found for this image.");
       }
 
-      return res.redirect('/home');
+      return res.redirect('/');
     }
 
     return res.status(400).json({ message: "Invalid slide type." });
@@ -575,7 +575,7 @@ const product_delete_image = async (req, res) => {
       console.log("No extra images found for this product in database.");
     }
 
-    res.redirect('/home');
+    res.redirect('/');
 
   } catch (error) {
     console.error('Error deleting image:', error);
