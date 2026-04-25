@@ -258,7 +258,7 @@ const top_slide_image = async (req, res) => {
     }
 
     console.log("✅ Images uploaded successfully");
-    res.redirect("/home");
+    res.redirect("/");
   } catch (err) {
     console.error("❌ Error uploading images:", err);
     res.status(500).send("Internal Server Error");

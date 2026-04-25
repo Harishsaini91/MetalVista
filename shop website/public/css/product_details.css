@@ -443,7 +443,7 @@ canvas {
   margin-right: 10px;
 }
 .menu-icon {
-  position: fixed;        /* ✅ keep it anchored inside navbar/slider */
+  position: fixed !important;        /* ✅ keep it anchored inside navbar/slider */
   top: clamp(10px, 2%, 25px); 
   right: clamp(10px, 2%, 30px);
   font-size: 2rem;
@@ -894,7 +894,6 @@ margin-bottom: 100px;
 @media (min-width: 1236px) {
   .menu-icon {
     display: none;
-    /* Show the element only in this range */
   }
 
   .nav-links {
@@ -922,7 +921,7 @@ margin-bottom: 100px;
 }
 
 .menu-icon {
-  position: fixed;
+  position: fixed !important;
   top: clamp(10px, 2%, 25px);
   right: clamp(10px, 2%, 30px);
   font-size: 2rem;
